@@ -5,6 +5,7 @@ import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.employee.model.Employee;
 import com.synacy.leavemanagement.employee.model.repository.EmployeeRepository;
 import com.synacy.leavemanagement.enums.RoleType;
+import com.synacy.leavemanagement.web.exceptions.InvalidAdminException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +47,6 @@ public class AdminService {
             employeeRepository.save(employee);
             return employee;
         }
-        return null;
+        throw new InvalidAdminException("Only HR Admins can create new members");
     }
 }
