@@ -30,8 +30,7 @@ class EmployeeServiceSpock extends Specification {
                                                            Mock(Employee)),
                                                    new Employee("Employee 3", roleTypeManager, 25),
                                                    new Employee("Employee 2", roleTypeMember, 20,
-                                                           Mock(Employee)),
-                                                   new Employee("Admin 1")])
+                                                           Mock(Employee))])
 
         when:
         Page<Employee> result = employeeService.fetchEmployees(max, page)
