@@ -23,7 +23,6 @@ class EmployeeServiceSpock extends Specification {
         given:
         int max = 3
         int page = 1
-        int expectedCount = 4
         RoleType roleTypeManager = RoleType.MANAGER
         RoleType roleTypeMember = RoleType.MEMBER
         Page<Employee> employees = new PageImpl<>([new Employee("Employee 1", roleTypeManager, 25),
@@ -32,15 +31,14 @@ class EmployeeServiceSpock extends Specification {
                                                    new Employee("Employee 3", roleTypeManager, 25),
                                                    new Employee("Employee 2", roleTypeMember, 20,
                                                            Mock(Employee)),
-        new Employee("Admin 1")])
+                                                   new Employee("Admin 1")])
 
         when:
         Page<Employee> result = employeeService.fetchEmployees(max, page)
 
         then:
         1 * employeeRepository.findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
-                Arrays.asList(RoleType.MANAGER, RoleType.MEMBER) ,_) >> employees
+                [RoleType.MANAGER, RoleType.MEMBER], _) >> employees
         employees == result
-        result.getSize() == expectedCount
     }
 }
