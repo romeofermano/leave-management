@@ -6,6 +6,7 @@ import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
 import com.synacy.leavemanagement.employee.model.Employee
 import com.synacy.leavemanagement.employee.model.repository.EmployeeRepository
+import com.synacy.leavemanagement.web.exceptions.InvalidAdminException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import spock.lang.Specification
@@ -46,21 +47,37 @@ class AdminServiceSpock extends Specification {
         given:
         Long adminId = 1L
         Employee employeeAdmin = new Employee("Admin")
-        EmployeeRequest managerRequest = new EmployeeRequest(name: "Robot", totalLeaves: 10,
+        EmployeeRequest employeeRequest = new EmployeeRequest(name: "Robot", totalLeaves: 10,
                 roleType: RoleType.MANAGER)
 
         and:
-        employeeRepository.findByIdAndRoleType(adminId, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
+        employeeRepository.findById(adminId) >> Optional.of(employeeAdmin)
 
         when:
-        employeeService.createMember(adminId, managerRequest)
+        employeeService.createMember(adminId, employeeRequest)
 
         then:
         1 * employeeRepository.save(_) >> { Employee savedEmployee ->
-            assert managerRequest.getName() == savedEmployee.getName()
-            assert managerRequest.getTotalLeaves() == savedEmployee.getTotalLeaves()
-            assert managerRequest.getRoleType() == savedEmployee.getRoleType()
+            assert employeeRequest.getName() == savedEmployee.getName()
+            assert employeeRequest.getTotalLeaves() == savedEmployee.getTotalLeaves()
+            assert employeeRequest.getRoleType() == savedEmployee.getRoleType()
             assert EmployeeStatus.ACTIVE == savedEmployee.getEmployeeStatus()
         }
+    }
+
+    def "createMember should throw Invalid admin exception when creating a new member is not HR_ADMIN"() {
+        given:
+        Long id = 1L
+        Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15)
+        EmployeeRequest employeeRequest = Mock(EmployeeRequest)
+
+        and:
+        employeeRepository.findById(id) >> Optional.of(employee)
+
+        when:
+        employeeService.createMember(id, employeeRequest)
+
+        then:
+        thrown(InvalidAdminException)
     }
 }

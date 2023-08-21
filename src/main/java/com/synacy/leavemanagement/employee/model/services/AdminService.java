@@ -19,8 +19,8 @@ public class AdminService {
         this.employeeRepository = employeeRepository;
     }
 
-    private Optional<Employee> findAdminById(Long id) {
-        return employeeRepository.findByIdAndRoleType(id, RoleType.HR_ADMIN);
+    private Optional<Employee> findEmployeeById(Long id) {
+        return employeeRepository.findById(id);
     }
 
     public Page<Employee> fetchEmployees(int max, int page) {
@@ -38,8 +38,8 @@ public class AdminService {
     // TODO: Terminate employees
 
     public Employee createMember(Long adminId, EmployeeRequest employeeRequest) {
-        Optional<Employee> employeeOptional = findAdminById(adminId);
-        if (employeeOptional.isPresent()) {
+        Optional<Employee> employeeOptional = findEmployeeById(adminId);
+        if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
             Employee employee = new Employee(employeeRequest.getName(), employeeRequest.getRoleType(),
                     employeeRequest.getTotalLeaves());;
 
