@@ -31,13 +31,15 @@ class EmployeeServiceSpock extends Specification {
                                                            Mock(Employee)),
                                                    new Employee("Employee 3", roleTypeManager, 25),
                                                    new Employee("Employee 2", roleTypeMember, 20,
-                                                           Mock(Employee))])
+                                                           Mock(Employee)),
+        new Employee("Admin 1")])
 
         when:
         Page<Employee> result = employeeService.fetchEmployees(max, page)
 
         then:
-        1 * employeeRepository.findAllByEmployeeStatus(EmployeeStatus.ACTIVE, _) >> employees
+        1 * employeeRepository.findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
+                Arrays.asList(RoleType.MANAGER, RoleType.MEMBER) ,_) >> employees
         employees == result
         result.getSize() == expectedCount
     }
