@@ -1,8 +1,8 @@
-package com.synacy.leavemanagement.services;
+package com.synacy.leavemanagement.employee.model.services;
 
 import com.synacy.leavemanagement.enums.EmployeeStatus;
-import com.synacy.leavemanagement.model.Employee;
-import com.synacy.leavemanagement.repository.EmployeeRepository;
+import com.synacy.leavemanagement.employee.model.Employee;
+import com.synacy.leavemanagement.employee.model.repository.EmployeeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +18,6 @@ public class EmployeeService {
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
 
-        return employeeRepository.findAll(pageable);
+        return employeeRepository.findAllByEmployeeStatus(EmployeeStatus.ACTIVE, pageable);
     }
 }
