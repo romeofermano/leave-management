@@ -33,6 +33,9 @@ public class EmployeeService {
     // TODO: Terminate employees
 
     public Employee createManager(EmployeeManagerRequest employeeManagerRequest) {
-        return null;
+        Employee employee = new Employee(employeeManagerRequest.getName(), employeeManagerRequest.getRoleType(),
+                employeeManagerRequest.getTotalLeaves());
+        employeeRepository.save(employee);
+        return employee;
     }
 }
