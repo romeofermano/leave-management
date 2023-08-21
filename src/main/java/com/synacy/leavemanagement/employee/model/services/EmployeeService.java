@@ -26,6 +26,7 @@ public class EmployeeService {
     }
 
     // TODO: List all employees with the employee status is active
+    // TODO: List all manager
     // TODO: Create new employees
     // TODO: Update existing employees
     // TODO: Terminate employees
