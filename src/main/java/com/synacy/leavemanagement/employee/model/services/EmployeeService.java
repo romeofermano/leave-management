@@ -1,5 +1,6 @@
 package com.synacy.leavemanagement.employee.model.services;
 
+import com.synacy.leavemanagement.employee.model.request.EmployeeManagerRequest;
 import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.employee.model.Employee;
 import com.synacy.leavemanagement.employee.model.repository.EmployeeRepository;
@@ -30,4 +31,8 @@ public class EmployeeService {
     // TODO: Create new employees
     // TODO: Update existing employees
     // TODO: Terminate employees
+
+    public Employee createManager(EmployeeManagerRequest employeeManagerRequest) {
+        return null;
+    }
 }
