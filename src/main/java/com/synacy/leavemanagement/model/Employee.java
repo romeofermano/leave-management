@@ -19,6 +19,7 @@ public class Employee {
     private String name;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
     private Integer totalLeaves;
@@ -26,6 +27,7 @@ public class Employee {
     private Integer currentLeaves;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
     @ManyToOne
