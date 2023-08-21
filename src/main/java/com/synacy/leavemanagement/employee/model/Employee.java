@@ -53,6 +53,12 @@ public class Employee {
         this.employeeStatus = EmployeeStatus.ACTIVE;
     }
 
+    public Employee(String name) {
+        this.name = name;
+        this.roleType = RoleType.HR_ADMIN;
+        this.employeeStatus = EmployeeStatus.ACTIVE;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
