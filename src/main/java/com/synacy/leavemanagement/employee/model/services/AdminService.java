@@ -60,6 +60,6 @@ public class AdminService {
             employeeRepository.save(employee);
             return employee;
         }
-        return null;
+        throw new InvalidAdminException("Only HR Admins can create new members");
     }
 }
