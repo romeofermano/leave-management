@@ -1,4 +1,7 @@
 package com.synacy.leavemanagement.enums;
 
-public class LeaveStatus {
+public enum LeaveStatus {
+    APPROVED,
+    REJECTED,
+    PENDING
 }
