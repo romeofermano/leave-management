@@ -1,4 +1,4 @@
-package com.synacy.leavemanagement.model;
+package com.synacy.leavemanagement.employee.model;
 
 import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.enums.RoleType;
@@ -19,6 +19,7 @@ public class Employee {
     private String name;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
     private Integer totalLeaves;
@@ -26,6 +27,7 @@ public class Employee {
     private Integer currentLeaves;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
     @ManyToOne
@@ -48,6 +50,12 @@ public class Employee {
         this.name = name;
         this.roleType = roleType;
         this.totalLeaves = totalLeaves;
+        this.employeeStatus = EmployeeStatus.ACTIVE;
+    }
+
+    public Employee(String name) {
+        this.name = name;
+        this.roleType = RoleType.HR_ADMIN;
         this.employeeStatus = EmployeeStatus.ACTIVE;
     }
 
