@@ -1,6 +1,7 @@
 package com.synacy.leavemanagement.services
 
-import com.synacy.leavemanagement.employee.model.request.EmployeeRequest
+import com.synacy.leavemanagement.employee.model.request.EmployeeManagerRequest
+import com.synacy.leavemanagement.employee.model.request.EmployeeMemberRequest
 import com.synacy.leavemanagement.employee.model.services.AdminService
 import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
@@ -47,7 +48,7 @@ class AdminServiceSpock extends Specification {
         given:
         Long adminId = 1L
         Employee employeeAdmin = new Employee("Admin")
-        EmployeeRequest employeeRequest = new EmployeeRequest(name: "Robot", totalLeaves: 10,
+        EmployeeMemberRequest employeeRequest = new EmployeeMemberRequest(name: "Robot", totalLeaves: 10,
                 roleType: RoleType.MANAGER)
 
         and:
@@ -65,19 +66,53 @@ class AdminServiceSpock extends Specification {
         }
     }
 
-    def "createMember should throw Invalid admin exception when creating a new member is not HR_ADMIN"() {
+    def "createMember should throw InvalidAdminException when creating a new member is not HR_ADMIN"() {
         given:
         Long id = 1L
         Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15)
-        EmployeeRequest employeeRequest = Mock(EmployeeRequest)
+        EmployeeMemberRequest employeeRequest = Mock(EmployeeMemberRequest)
 
         and:
-        employeeRepository.findById(id) >> Optional.of(employee)
+        employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE) >> Optional.of(employee)
 
         when:
         employeeService.createMember(id, employeeRequest)
 
         then:
+        thrown(InvalidAdminException)
+    }
+
+    def "createManager should create new manager with the correct values when the creator is HR Admin"() {
+        given:
+        Long id = 3L
+        Employee employee = new Employee("Admin 1")
+        EmployeeManagerRequest managerRequest = new EmployeeManagerRequest(name: "Manager 1",
+                roleType: RoleType.MANAGER, totalLeaves: 10)
+
+        when:
+        employeeService.createManager(id, managerRequest)
+
+        then:
+        1 * employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE) >> Optional.of(employee)
+        1 * employeeRepository.save(_) >> { Employee savedEmployee ->
+            assert managerRequest.getName() == savedEmployee.getName()
+            assert managerRequest.getRoleType() == savedEmployee.getRoleType()
+            assert managerRequest.getTotalLeaves() == savedEmployee.getTotalLeaves()
+            assert EmployeeStatus.ACTIVE == savedEmployee.getEmployeeStatus()
+        }
+    }
+
+    def "createManager should throw InvalidAdminException when creating a new manager is not HR Admin"() {
+        given:
+        Long id = 2L
+        Employee admin = new Employee("Member 1", RoleType.MEMBER, 20, Mock(Employee))
+        EmployeeManagerRequest managerRequest = Mock(EmployeeManagerRequest)
+
+        when:
+        employeeService.createManager(id, managerRequest)
+
+        then:
+        1 * employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE) >> Optional.of(admin)
         thrown(InvalidAdminException)
     }
 }

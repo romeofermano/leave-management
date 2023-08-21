@@ -4,7 +4,7 @@ import com.synacy.leavemanagement.enums.RoleType;
 import lombok.Getter;
 
 @Getter
-public class EmployeeRequest {
+public class EmployeeMemberRequest {
     private String name;
     private RoleType roleType;
     private Integer totalLeaves;

@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Page<Employee> findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus employeeStatus, List<RoleType> roleTypes,
                                                         Pageable pageable);
+    Optional<Employee> findByIdAndEmployeeStatus(Long id, EmployeeStatus employeeStatus);
 }
