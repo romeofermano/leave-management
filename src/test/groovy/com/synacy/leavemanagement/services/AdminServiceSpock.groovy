@@ -1,7 +1,7 @@
 package com.synacy.leavemanagement.services
 
-import com.synacy.leavemanagement.employee.model.request.EmployeeManagerRequest
-import com.synacy.leavemanagement.employee.model.services.EmployeeService
+import com.synacy.leavemanagement.employee.model.request.EmployeeRequest
+import com.synacy.leavemanagement.employee.model.services.AdminService
 import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
 import com.synacy.leavemanagement.employee.model.Employee
@@ -10,14 +10,14 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import spock.lang.Specification
 
-class EmployeeServiceSpock extends Specification {
+class AdminServiceSpock extends Specification {
 
-    EmployeeService employeeService
+    AdminService employeeService
     EmployeeRepository employeeRepository
 
     void setup() {
         employeeRepository = Mock(EmployeeRepository)
-        employeeService = new EmployeeService(employeeRepository)
+        employeeService = new AdminService(employeeRepository)
     }
 
     def "fetchEmployees should fetch all employee"() {
@@ -42,13 +42,18 @@ class EmployeeServiceSpock extends Specification {
         employees == result
     }
 
-    def "createManager should create new manager with the correct values"() {
+    def "createMember should create new member with the correct values when the creator is hr_admin"() {
         given:
-        EmployeeManagerRequest managerRequest = new EmployeeManagerRequest(name: "Robot", totalLeaves: 10,
+        Long adminId = 1L
+        Employee employeeAdmin = new Employee("Admin")
+        EmployeeRequest managerRequest = new EmployeeRequest(name: "Robot", totalLeaves: 10,
                 roleType: RoleType.MANAGER)
 
+        and:
+        employeeRepository.findByIdAndRoleType(adminId, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
+
         when:
-        employeeService.createManager(managerRequest)
+        employeeService.createMember(adminId, managerRequest)
 
         then:
         1 * employeeRepository.save(_) >> { Employee savedEmployee ->
