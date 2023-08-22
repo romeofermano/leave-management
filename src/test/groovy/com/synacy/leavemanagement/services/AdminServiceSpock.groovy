@@ -1,12 +1,11 @@
 package com.synacy.leavemanagement.services
 
-import com.synacy.leavemanagement.employee.model.request.EmployeeManagerRequest
-import com.synacy.leavemanagement.employee.model.request.EmployeeMemberRequest
-import com.synacy.leavemanagement.employee.model.services.AdminService
+import com.synacy.leavemanagement.request.EmployeeManagerRequest
+import com.synacy.leavemanagement.request.EmployeeMemberRequest
 import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
-import com.synacy.leavemanagement.employee.model.Employee
-import com.synacy.leavemanagement.employee.model.repository.EmployeeRepository
+import com.synacy.leavemanagement.model.Employee
+import com.synacy.leavemanagement.repository.EmployeeRepository
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -14,12 +13,12 @@ import spock.lang.Specification
 
 class AdminServiceSpock extends Specification {
 
-    AdminService employeeService
+    AdminService adminService
     EmployeeRepository employeeRepository
 
     void setup() {
         employeeRepository = Mock(EmployeeRepository)
-        employeeService = new AdminService(employeeRepository)
+        adminService = new AdminService(employeeRepository)
     }
 
     def "fetchEmployees should fetch all employee"() {
@@ -36,7 +35,7 @@ class AdminServiceSpock extends Specification {
                                                            Mock(Employee))])
 
         when:
-        Page<Employee> result = employeeService.fetchEmployees(max, page)
+        Page<Employee> result = adminService.fetchEmployees(max, page)
 
         then:
         1 * employeeRepository.findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
@@ -52,10 +51,10 @@ class AdminServiceSpock extends Specification {
                 roleType: RoleType.MANAGER)
 
         and:
-        employeeRepository.findById(adminId) >> Optional.of(employeeAdmin)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId,EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
 
         when:
-        employeeService.createMember(adminId, employeeRequest)
+        adminService.createMember(adminId, employeeRequest)
 
         then:
         1 * employeeRepository.save(_) >> { Employee savedEmployee ->
@@ -72,13 +71,11 @@ class AdminServiceSpock extends Specification {
         Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15)
         EmployeeMemberRequest employeeRequest = Mock(EmployeeMemberRequest)
 
-        and:
-        employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE) >> Optional.of(employee)
-
         when:
-        employeeService.createMember(id, employeeRequest)
+        adminService.createMember(id, employeeRequest)
 
         then:
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
         thrown(InvalidAdminException)
     }
 
@@ -90,10 +87,10 @@ class AdminServiceSpock extends Specification {
                 roleType: RoleType.MANAGER, totalLeaves: 10)
 
         when:
-        employeeService.createManager(id, managerRequest)
+        adminService.createManager(id, managerRequest)
 
         then:
-        1 * employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE) >> Optional.of(employee)
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
         1 * employeeRepository.save(_) >> { Employee savedEmployee ->
             assert managerRequest.getName() == savedEmployee.getName()
             assert managerRequest.getRoleType() == savedEmployee.getRoleType()
@@ -105,14 +102,24 @@ class AdminServiceSpock extends Specification {
     def "createManager should throw InvalidAdminException when creating a new manager is not HR Admin"() {
         given:
         Long id = 2L
-        Employee admin = new Employee("Member 1", RoleType.MEMBER, 20, Mock(Employee))
+        Employee employee = new Employee("Member 1", RoleType.MEMBER, 20, Mock(Employee))
         EmployeeManagerRequest managerRequest = Mock(EmployeeManagerRequest)
 
         when:
-        employeeService.createManager(id, managerRequest)
+        adminService.createManager(id, managerRequest)
 
         then:
-        1 * employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE) >> Optional.of(admin)
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE,RoleType.HR_ADMIN) >> Optional.of(employee)
         thrown(InvalidAdminException)
+    }
+
+    def "updateMember should update existing member when the user is HR Admin"() {
+        given:
+        Long adminId = 1L
+        Employee memberEmployee = new Employee("Member 1", RoleType.MEMBER, 10, Mock(Employee))
+        EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Updated Member 1", roleType: RoleType.MANAGER, totalLeaves: 15)
+
+        when:
+        adminService.updateMember(adminId, memberRequest)
     }
 }

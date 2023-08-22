@@ -1,10 +1,10 @@
-package com.synacy.leavemanagement.employee.model.services;
+package com.synacy.leavemanagement.services;
 
-import com.synacy.leavemanagement.employee.model.request.EmployeeManagerRequest;
-import com.synacy.leavemanagement.employee.model.request.EmployeeMemberRequest;
+import com.synacy.leavemanagement.request.EmployeeManagerRequest;
+import com.synacy.leavemanagement.request.EmployeeMemberRequest;
 import com.synacy.leavemanagement.enums.EmployeeStatus;
-import com.synacy.leavemanagement.employee.model.Employee;
-import com.synacy.leavemanagement.employee.model.repository.EmployeeRepository;
+import com.synacy.leavemanagement.model.Employee;
+import com.synacy.leavemanagement.repository.EmployeeRepository;
 import com.synacy.leavemanagement.enums.RoleType;
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException;
 import org.springframework.data.domain.Page;
@@ -21,8 +21,12 @@ public class AdminService {
         this.employeeRepository = employeeRepository;
     }
 
+    private Optional<Employee> findEmployeeAdminById(Long id) {
+        return employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN);
+    }
+
     private Optional<Employee> findEmployeeById(Long id) {
-        return employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE);
+        return employeeRepository.findById(id);
     }
 
     public Page<Employee> fetchEmployees(int max, int page) {
@@ -40,7 +44,7 @@ public class AdminService {
     // TODO: Terminate employees
 
     public Employee createMember(Long adminId, EmployeeMemberRequest employeeMemberRequest) {
-        Optional<Employee> employeeOptional = findEmployeeById(adminId);
+        Optional<Employee> employeeOptional = findEmployeeAdminById(adminId);
         if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
             Employee employee = new Employee(employeeMemberRequest.getName(), employeeMemberRequest.getRoleType(),
                     employeeMemberRequest.getTotalLeaves());;
@@ -52,7 +56,7 @@ public class AdminService {
     }
 
     public Employee createManager(Long adminId, EmployeeManagerRequest employeeManagerRequest) {
-        Optional<Employee> employeeOptional = findEmployeeById(adminId);
+        Optional<Employee> employeeOptional = findEmployeeAdminById(adminId);
         if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
             Employee employee = new Employee(employeeManagerRequest.getName(), employeeManagerRequest.getRoleType(),
                     employeeManagerRequest.getTotalLeaves());
@@ -61,5 +65,9 @@ public class AdminService {
             return employee;
         }
         throw new InvalidAdminException("Only HR Admins can create new members");
+    }
+
+    public Employee updateMember(Long adminId, EmployeeMemberRequest employeeMemberRequest) {
+        return null;
     }
 }
