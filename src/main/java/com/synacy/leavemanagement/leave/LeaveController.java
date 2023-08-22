@@ -20,6 +20,7 @@ public class LeaveController {
         this.leaveService = leaveService;
     }
 
+    //TODO: Add exceptions
     @GetMapping("api/v1/leave")
     public PageResponse<LeaveResponse> fetchLeaves(
             @RequestParam(value = "max", defaultValue = "3") int max,
@@ -42,4 +43,14 @@ public class LeaveController {
         return new LeaveResponse(leave);
     }
     //TODO: PUT LeaveStatus (rejected, accepted)
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping("api/v1/leave/{id}")
+    public LeaveResponse updateLeave(
+            @PathVariable Long id,
+            @RequestBody LeaveRequest leaveRequest
+    ){
+        Leave leave = leaveService.updateLeave(id, leaveRequest);
+
+    }
 }
