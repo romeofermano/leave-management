@@ -1,4 +1,4 @@
-package com.synacy.leavemanagement.web.exceptions;
+package com.synacy.leavemanagement.response;
 
 import lombok.Getter;
 

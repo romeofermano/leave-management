@@ -1,12 +1,12 @@
-package com.synacy.leavemanagement.employee.model.request;
+package com.synacy.leavemanagement.request;
 
 import com.synacy.leavemanagement.enums.RoleType;
 import lombok.Getter;
 
 @Getter
-public class EmployeeMemberRequest {
+public class EmployeeRequest {
     private String name;
     private RoleType roleType;
     private Integer totalLeaves;
-    private Long manager_id;
+    private Long managerId;
 }
