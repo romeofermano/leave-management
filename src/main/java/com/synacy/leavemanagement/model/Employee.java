@@ -47,14 +47,6 @@ public class Employee {
         this.employeeStatus = EmployeeStatus.ACTIVE;
     }
 
-    public Employee(String name, RoleType roleType, Integer totalLeaves) {
-        this.name = name;
-        this.roleType = roleType;
-        this.totalLeaves = totalLeaves;
-        this.currentLeaves = 0;
-        this.employeeStatus = EmployeeStatus.ACTIVE;
-    }
-
     public Employee(String name) {
         this.name = name;
         this.roleType = RoleType.HR_ADMIN;
