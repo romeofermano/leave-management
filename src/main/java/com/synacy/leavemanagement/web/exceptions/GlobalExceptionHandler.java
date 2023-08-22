@@ -12,4 +12,10 @@ public class GlobalExceptionHandler {
     public ApiErrorResponse handleInvalidAdminException(InvalidAdminException e) {
         return new ApiErrorResponse("INVALID_RIGHTS", e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public ApiErrorResponse handleUserNotFoundException(UserNotFoundException e) {
+        return new ApiErrorResponse("USER_NOT_FOUND", e.getMessage());
+    }
 }
