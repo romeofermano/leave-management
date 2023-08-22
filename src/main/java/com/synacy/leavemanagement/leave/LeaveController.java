@@ -26,7 +26,7 @@ public class LeaveController {
             @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page
     ){
-        int totalCount = 0;
+        int totalCount = leaveService.fetchTotalLeavesCount();
         Page<Leave> leaves = leaveService.fetchLeaves(max, page);
         List<LeaveResponse> leaveResponsesList = leaves.getContent().stream().map(LeaveResponse::new).collect(Collectors.toList());
         return new PageResponse<>(totalCount, page, leaveResponsesList);
@@ -45,12 +45,12 @@ public class LeaveController {
     //TODO: PUT LeaveStatus (rejected, accepted)
 
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PutMapping("api/v1/leave/{id}")
+    @PutMapping("api/v1/leave/accept/{id}")
     public LeaveResponse updateLeave(
             @PathVariable Long id,
             @RequestBody LeaveRequest leaveRequest
     ){
         Leave leave = leaveService.updateLeave(id, leaveRequest);
-
+        return new LeaveResponse(leave);
     }
 }
