@@ -31,12 +31,14 @@ public class EmployeeService {
     }
 
     private Employee getManagerById(Long id) {
-        Optional<Employee> manager = employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.MANAGER);
+        Optional<Employee> manager = employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE,
+                RoleType.MANAGER);
         return manager.orElseThrow(() -> new UserNotFoundException("Manager not found"));
     }
 
     public Integer fetchTotalEmployee() {
-        return employeeRepository.countAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE, Arrays.asList(RoleType.MEMBER, RoleType.MANAGER));
+        return employeeRepository.countAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
+                Arrays.asList(RoleType.MEMBER, RoleType.MANAGER));
     }
 
     public Page<Employee> fetchEmployees(int max, int page) {
@@ -58,18 +60,6 @@ public class EmployeeService {
         if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
             Employee employee = new Employee(employeeRequest.getName(), employeeRequest.getRoleType(),
                     employeeRequest.getTotalLeaves(), getManagerById(employeeRequest.getManagerId()));
-
-            employeeRepository.save(employee);
-            return employee;
-        }
-        throw new InvalidAdminException("Only HR Admins can create new members");
-    }
-
-    public Employee createManager(Long adminId, EmployeeManagerRequest employeeManagerRequest) {
-        Optional<Employee> employeeOptional = findEmployeeAdminById(adminId);
-        if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
-            Employee employee = new Employee(employeeManagerRequest.getName(), employeeManagerRequest.getRoleType(),
-                    employeeManagerRequest.getTotalLeaves());
 
             employeeRepository.save(employee);
             return employee;
