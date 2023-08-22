@@ -35,6 +35,19 @@ class EmployeeServiceSpec extends Specification {
         expectedCount == result
     }
 
+    def "fetchEmployeeById should fetch employee by id with the employee status is active"() {
+        given:
+        Long employeeId = 1L
+        Employee employee = new Employee("Member", RoleType.MEMBER, 10, Mock(Employee))
+
+        when:
+        Employee result = employeeService.fetchEmployeeById()
+
+        then:
+        1 * employeeRepository.findByIdAndEmployeeStatus(employeeId, EmployeeStatus.ACTIVE) >> employee
+        result == employee
+    }
+
     def "fetchEmployees should fetch all employee"() {
         given:
         int max = 3

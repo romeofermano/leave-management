@@ -41,7 +41,7 @@ public class EmployeeService {
                 Arrays.asList(RoleType.MEMBER, RoleType.MANAGER));
     }
 
-    public Employee getEmployeeById() {
+    public Employee fetchEmployeeById() {
         return null;
     }
 
