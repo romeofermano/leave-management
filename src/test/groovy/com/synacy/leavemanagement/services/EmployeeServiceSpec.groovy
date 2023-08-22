@@ -1,6 +1,5 @@
 package com.synacy.leavemanagement.services
 
-import com.synacy.leavemanagement.request.EmployeeManagerRequest
 import com.synacy.leavemanagement.request.EmployeeRequest
 import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
@@ -58,17 +57,32 @@ class EmployeeServiceSpec extends Specification {
         employees == result
     }
 
-    def "createMember should create new member with the correct values when the creator is HR Admin"() {
+    def "fetchListEmployee should fetch list of employee with the employee status is active"() {
+        given:
+        List<Employee> employees = [new Employee("Member 1", RoleType.MEMBER, 10, Mock(Employee)),
+                                    new Employee("Manager 1", RoleType.MANAGER, 10, null),
+                                    new Employee("Admin 1")]
+
+        when:
+        List<Employee> result = employeeService.fetchListEmployee()
+
+        then:
+        1 * employeeRepository.findAllByEmployeeStatus(EmployeeStatus.ACTIVE) >> employees
+        result.containsAll(employees)
+    }
+
+    def "createEmployee should create new member with the correct values when the creator is HR Admin"() {
         given:
         Long adminId = 1L
+        Long managerId = 6L
         Employee employeeAdmin = new Employee("Admin")
         Employee manager = new Employee("Manager 1", RoleType.MANAGER, 10, null)
         EmployeeRequest employeeRequest = new EmployeeRequest(name: "Robot", totalLeaves: 10,
-                roleType: RoleType.MANAGER)
+                roleType: RoleType.MEMBER, managerId: managerId)
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(_ as Long, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
 
         when:
         employeeService.createEmployee(adminId, employeeRequest)
@@ -82,7 +96,7 @@ class EmployeeServiceSpec extends Specification {
         }
     }
 
-    def "createMember should throw InvalidAdminException when creating a new member is not HR_ADMIN"() {
+    def "createEmployee should throw InvalidAdminException when creating a new member is not HR_ADMIN"() {
         given:
         Long id = 1L
         Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15, null)
