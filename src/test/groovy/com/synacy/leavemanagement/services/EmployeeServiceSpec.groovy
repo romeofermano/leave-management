@@ -41,10 +41,10 @@ class EmployeeServiceSpec extends Specification {
         Employee employee = new Employee("Member", RoleType.MEMBER, 10, Mock(Employee))
 
         when:
-        Employee result = employeeService.fetchEmployeeById()
+        Employee result = employeeService.fetchEmployeeById(employeeId)
 
         then:
-        1 * employeeRepository.findByIdAndEmployeeStatus(employeeId, EmployeeStatus.ACTIVE) >> employee
+        1 * employeeRepository.findByIdAndEmployeeStatus(employeeId, EmployeeStatus.ACTIVE) >> Optional.of(employee)
         result == employee
     }
 

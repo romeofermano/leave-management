@@ -41,8 +41,9 @@ public class EmployeeService {
                 Arrays.asList(RoleType.MEMBER, RoleType.MANAGER));
     }
 
-    public Employee fetchEmployeeById() {
-        return null;
+    public Employee fetchEmployeeById(Long id) {
+        Optional<Employee> employee = employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE);
+        return employee.orElseThrow(() -> new UserNotFoundException("Employee not found"));
     }
 
     public Page<Employee> fetchEmployees(int max, int page) {
