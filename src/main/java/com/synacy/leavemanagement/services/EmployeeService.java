@@ -7,6 +7,7 @@ import com.synacy.leavemanagement.model.Employee;
 import com.synacy.leavemanagement.repository.EmployeeRepository;
 import com.synacy.leavemanagement.enums.RoleType;
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException;
+import com.synacy.leavemanagement.web.exceptions.UserNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +26,9 @@ public class EmployeeService {
         return employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN);
     }
 
-    private Optional<Employee> findEmployeeById(Long id) {
-        return employeeRepository.findById(id);
+    private Employee getManagerById(Long id) {
+        Optional<Employee> manager = employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.MANAGER);
+        return manager.orElseThrow(() -> new UserNotFoundException("Manager not found"));
     }
 
     public Page<Employee> fetchEmployees(int max, int page) {
@@ -47,7 +49,7 @@ public class EmployeeService {
         Optional<Employee> employeeOptional = findEmployeeAdminById(adminId);
         if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
             Employee employee = new Employee(employeeRequest.getName(), employeeRequest.getRoleType(),
-                    employeeRequest.getTotalLeaves());;
+                    employeeRequest.getTotalLeaves(), getManagerById(employeeRequest.getManagerId()));;
 
             employeeRepository.save(employee);
             return employee;
