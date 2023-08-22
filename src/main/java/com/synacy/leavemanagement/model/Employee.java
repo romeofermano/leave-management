@@ -38,12 +38,11 @@ public class Employee {
 
     }
 
-    public Employee(String name, RoleType roleType, Integer totalLeaves, Employee manager) {
+    public Employee(String name, RoleType roleType, Integer totalLeaves) {
         this.name = name;
         this.roleType = roleType;
         this.totalLeaves = totalLeaves;
         this.currentLeaves = 0;
-        this.manager = manager;
         this.employeeStatus = EmployeeStatus.ACTIVE;
     }
 

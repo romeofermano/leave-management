@@ -4,7 +4,7 @@ import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.enums.RoleType;
 import com.synacy.leavemanagement.model.Employee;
 import com.synacy.leavemanagement.repository.EmployeeRepository;
-import com.synacy.leavemanagement.request.EmployeeRequest;
+import com.synacy.leavemanagement.request.EmployeeManagerRequest;
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException;
 import com.synacy.leavemanagement.web.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,19 +64,15 @@ public class EmployeeService {
     // TODO: Update existing employees
     // TODO: Terminate employees
 
-    public Employee createEmployee(Long adminId, EmployeeRequest employeeRequest) {
+    public Employee createEmployeeManager(Long adminId, EmployeeManagerRequest managerRequest) {
         Optional<Employee> employeeOptional = findEmployeeAdminById(adminId);
-        if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
-            Employee employee = new Employee(employeeRequest.getName(), employeeRequest.getRoleType(),
-                    employeeRequest.getTotalLeaves(), getManagerById(employeeRequest.getManagerId()));
+        if (employeeOptional.isPresent()) {
+            Employee employee = new Employee(managerRequest.getName(), managerRequest.getRoleType(),
+                    managerRequest.getTotalLeaves());
 
             employeeRepository.save(employee);
             return employee;
         }
         throw new InvalidAdminException("Only HR Admins can create new members");
-    }
-
-    public Employee updateMember(Long adminId, EmployeeRequest employeeRequest) {
-        return null;
     }
 }

@@ -38,7 +38,7 @@ class EmployeeServiceSpec extends Specification {
     def "fetchEmployeeById should fetch employee by id with the employee status is active"() {
         given:
         Long employeeId = 1L
-        Employee employee = new Employee("Member", RoleType.MEMBER, 10, Mock(Employee))
+        Employee employee = new Employee("Member", RoleType.MEMBER, 10)
 
         when:
         Employee result = employeeService.fetchEmployeeById(employeeId)
@@ -54,12 +54,10 @@ class EmployeeServiceSpec extends Specification {
         int page = 1
         RoleType roleTypeManager = RoleType.MANAGER
         RoleType roleTypeMember = RoleType.MEMBER
-        Page<Employee> employees = new PageImpl<>([new Employee("Employee 1", roleTypeManager, 25, null),
-                                                   new Employee("Employee 2", roleTypeMember, 20,
-                                                           Mock(Employee)),
-                                                   new Employee("Employee 3", roleTypeManager, 25, null),
-                                                   new Employee("Employee 2", roleTypeMember, 20,
-                                                           Mock(Employee))])
+        Page<Employee> employees = new PageImpl<>([new Employee("Employee 1", roleTypeManager, 25),
+                                                   new Employee("Employee 2", roleTypeMember, 20),
+                                                   new Employee("Employee 3", roleTypeManager, 25),
+                                                   new Employee("Employee 2", roleTypeMember, 20)])
 
         when:
         Page<Employee> result = employeeService.fetchEmployees(max, page)
@@ -72,8 +70,8 @@ class EmployeeServiceSpec extends Specification {
 
     def "fetchListEmployee should fetch list of employee with the employee status is active"() {
         given:
-        List<Employee> employees = [new Employee("Member 1", RoleType.MEMBER, 10, Mock(Employee)),
-                                    new Employee("Manager 1", RoleType.MANAGER, 10, null),
+        List<Employee> employees = [new Employee("Member 1", RoleType.MEMBER, 10),
+                                    new Employee("Manager 1", RoleType.MANAGER, 10),
                                     new Employee("Admin 1")]
 
         when:
@@ -89,7 +87,7 @@ class EmployeeServiceSpec extends Specification {
         Long adminId = 1L
         Long managerId = 6L
         Employee employeeAdmin = new Employee("Admin")
-        Employee manager = new Employee("Manager 1", RoleType.MANAGER, 10, null)
+        Employee manager = new Employee("Manager 1", RoleType.MANAGER, 10)
         EmployeeRequest employeeRequest = new EmployeeRequest(name: "Robot", totalLeaves: 10,
                 roleType: RoleType.MEMBER, managerId: managerId)
 
@@ -98,7 +96,7 @@ class EmployeeServiceSpec extends Specification {
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
 
         when:
-        employeeService.createEmployee(adminId, employeeRequest)
+        employeeService.createEmployeeManager(adminId, employeeRequest)
 
         then:
         1 * employeeRepository.save(_) >> { Employee savedEmployee ->
@@ -112,11 +110,11 @@ class EmployeeServiceSpec extends Specification {
     def "createEmployee should throw InvalidAdminException when creating a new member is not HR_ADMIN"() {
         given:
         Long id = 1L
-        Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15, null)
+        Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15)
         EmployeeRequest employeeRequest = Mock(EmployeeRequest)
 
         when:
-        employeeService.createEmployee(id, employeeRequest)
+        employeeService.createEmployeeManager(id, employeeRequest)
 
         then:
         1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
