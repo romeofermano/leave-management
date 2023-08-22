@@ -16,13 +16,14 @@ public class LeaveResponse {
     private final LeaveStatus leaveStatus;
 
 
-    public LeaveResponse(Long id, String employeeName, LocalDate startDate, LocalDate endDate, Integer days, String reason, LeaveStatus leaveStatus) {
-        this.id = id;
-        this.employeeName = employeeName;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.days = days;
-        this.reason = reason;
-        this.leaveStatus = leaveStatus;
+    public LeaveResponse(Leave leave) {
+        this.id = leave.getId();
+        this.employeeName = leave.getEmployee().getName();
+        this.startDate = leave.getStartDate();
+        this.endDate = leave.getEndDate();
+        this.days = leave.getDays();
+        this.reason = leave.getReason();
+        this.leaveStatus = leave.getLeaveStatus();
     }
+
 }

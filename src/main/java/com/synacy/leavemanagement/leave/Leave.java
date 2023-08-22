@@ -9,7 +9,6 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Entity
 public class Leave {
     @Id
@@ -18,27 +17,34 @@ public class Leave {
     @Column(nullable = false)
     Long id;
 
-    @Column(nullable = false)
+
+    @Setter
     @ManyToOne(targetEntity = Employee.class, cascade = {CascadeType.ALL})
     @JoinColumn(name = "employee_id")
     Employee employee;
 
+    @Setter
     @Column(nullable = false)
     LocalDate startDate;
 
+    @Setter
     @Column(nullable = false)
     LocalDate endDate;
 
+    @Setter
     @Column(nullable = false)
     Integer days;
 
+    @Setter
     @Column(nullable = false)
     String reason;
 
+    @Setter
     @Column(nullable = false)
     LeaveStatus leaveStatus;
 
     public Leave(){
 
     }
+
 }
