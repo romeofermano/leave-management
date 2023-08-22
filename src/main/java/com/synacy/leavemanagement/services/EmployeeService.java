@@ -36,7 +36,7 @@ public class EmployeeService {
     }
 
     public Integer fetchTotalEmployee() {
-        return null;
+        return employeeRepository.countAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE, Arrays.asList(RoleType.MEMBER, RoleType.MANAGER));
     }
 
     public Page<Employee> fetchEmployees(int max, int page) {
