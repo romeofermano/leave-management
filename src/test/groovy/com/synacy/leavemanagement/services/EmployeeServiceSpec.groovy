@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import spock.lang.Specification
 
-class EmployeeServiceSpock extends Specification {
+class EmployeeServiceSpec extends Specification {
 
     EmployeeService employeeService
     EmployeeRepository employeeRepository
@@ -19,6 +19,21 @@ class EmployeeServiceSpock extends Specification {
     void setup() {
         employeeRepository = Mock(EmployeeRepository)
         employeeService = new EmployeeService(employeeRepository)
+    }
+
+    def "fetchTotalEmployee should count all employee that is currently active"() {
+        given:
+        int expectedCount = 5
+
+        and:
+        employeeRepository.countAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
+                [RoleType.MEMBER, RoleType.MANAGER]) >> expectedCount
+
+        when:
+        int result = employeeService.fetchTotalEmployee()
+
+        then:
+        expectedCount == result
     }
 
     def "fetchEmployees should fetch all employee"() {

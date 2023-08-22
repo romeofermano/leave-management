@@ -8,5 +8,5 @@ public class EmployeeRequest {
     private String name;
     private RoleType roleType;
     private Integer totalLeaves;
-    private Long manager_id;
+    private Long managerId;
 }
