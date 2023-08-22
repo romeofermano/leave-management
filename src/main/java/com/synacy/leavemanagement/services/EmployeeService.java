@@ -4,7 +4,6 @@ import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.enums.RoleType;
 import com.synacy.leavemanagement.model.Employee;
 import com.synacy.leavemanagement.repository.EmployeeRepository;
-import com.synacy.leavemanagement.request.EmployeeManagerRequest;
 import com.synacy.leavemanagement.request.EmployeeRequest;
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException;
 import com.synacy.leavemanagement.web.exceptions.UserNotFoundException;
@@ -15,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,12 +41,20 @@ public class EmployeeService {
                 Arrays.asList(RoleType.MEMBER, RoleType.MANAGER));
     }
 
+    public Employee getEmployeeById() {
+        return null;
+    }
+
     public Page<Employee> fetchEmployees(int max, int page) {
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
 
         return employeeRepository.findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
                 Arrays.asList(RoleType.MANAGER, RoleType.MEMBER), pageable);
+    }
+
+    public List<Employee> fetchListEmployee() {
+        return employeeRepository.findAllByEmployeeStatus(EmployeeStatus.ACTIVE);
     }
 
     // TODO: List all employees with the employee status is active
