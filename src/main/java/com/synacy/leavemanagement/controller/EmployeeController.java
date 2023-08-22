@@ -1,6 +1,7 @@
 package com.synacy.leavemanagement.controller;
 
 import com.synacy.leavemanagement.model.Employee;
+import com.synacy.leavemanagement.response.EmployeeListResponse;
 import com.synacy.leavemanagement.response.EmployeeResponse;
 import com.synacy.leavemanagement.response.PageResponse;
 import com.synacy.leavemanagement.services.EmployeeService;
@@ -29,5 +30,10 @@ public class EmployeeController {
         List<EmployeeResponse> employeeResponseList = employees.getContent().stream().map(EmployeeResponse::new)
                 .collect(Collectors.toList());
         return new PageResponse<>(employeeService.fetchTotalEmployee(), page, employeeResponseList);
+    }
+
+    @GetMapping("api/v1/employees/list")
+    public List<EmployeeListResponse> getListEmployees() {
+        return null;
     }
 }
