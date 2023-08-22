@@ -1,4 +1,4 @@
-package com.synacy.leavemanagement.employee.model;
+package com.synacy.leavemanagement.model;
 
 import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.enums.RoleType;
