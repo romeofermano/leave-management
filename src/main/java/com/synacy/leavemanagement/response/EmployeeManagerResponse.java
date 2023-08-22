@@ -6,7 +6,7 @@ import com.synacy.leavemanagement.model.Employee;
 import lombok.Getter;
 
 @Getter
-public class EmployeeResponse {
+public class EmployeeManagerResponse {
     private final Long id;
     private final String name;
     private final RoleType roleType;
@@ -14,7 +14,7 @@ public class EmployeeResponse {
     private final Integer currentLeaves;
     private final EmployeeStatus employeeStatus;
 
-    public EmployeeResponse(Employee employee) {
+    public EmployeeManagerResponse(Employee employee) {
         this.id = employee.getId();
         this.name = employee.getName();
         this.roleType = employee.getRoleType();
