@@ -1,10 +1,10 @@
 package com.synacy.leavemanagement.services
 
-import com.synacy.leavemanagement.request.EmployeeRequest
 import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
 import com.synacy.leavemanagement.model.Employee
 import com.synacy.leavemanagement.repository.EmployeeRepository
+import com.synacy.leavemanagement.request.EmployeeManagerRequest
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -82,18 +82,17 @@ class EmployeeServiceSpec extends Specification {
         result.containsAll(employees)
     }
 
-    def "createEmployee should create new member with the correct values when the creator is HR Admin"() {
+    def "createEmployeeManager should create new member with the correct values when the creator is HR Admin"() {
         given:
         Long adminId = 1L
         Long managerId = 6L
         Employee employeeAdmin = new Employee("Admin")
         Employee manager = new Employee("Manager 1", RoleType.MANAGER, 10)
-        EmployeeRequest employeeRequest = new EmployeeRequest(name: "Robot", totalLeaves: 10,
-                roleType: RoleType.MEMBER, managerId: managerId)
+        EmployeeManagerRequest employeeRequest = new EmployeeManagerRequest(name: "Robot", totalLeaves: 10,
+                roleType: RoleType.MEMBER)
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
 
         when:
         employeeService.createEmployeeManager(adminId, employeeRequest)
@@ -107,14 +106,14 @@ class EmployeeServiceSpec extends Specification {
         }
     }
 
-    def "createEmployee should throw InvalidAdminException when creating a new member is not HR_ADMIN"() {
+    def "createEmployeeManager should throw InvalidAdminException when creating a new member is not HR_ADMIN"() {
         given:
         Long id = 1L
         Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15)
-        EmployeeRequest employeeRequest = Mock(EmployeeRequest)
+        EmployeeManagerRequest managerRequest = Mock(EmployeeManagerRequest)
 
         when:
-        employeeService.createEmployeeManager(id, employeeRequest)
+        employeeService.createEmployeeManager(id, managerRequest)
 
         then:
         1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
