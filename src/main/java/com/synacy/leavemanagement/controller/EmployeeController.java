@@ -2,8 +2,9 @@ package com.synacy.leavemanagement.controller;
 
 import com.synacy.leavemanagement.model.Employee;
 import com.synacy.leavemanagement.request.EmployeeManagerRequest;
+import com.synacy.leavemanagement.request.EmployeeMemberRequest;
 import com.synacy.leavemanagement.response.EmployeeListResponse;
-import com.synacy.leavemanagement.response.EmployeeManagerResponse;
+import com.synacy.leavemanagement.response.EmployeeResponse;
 import com.synacy.leavemanagement.response.PageResponse;
 import com.synacy.leavemanagement.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,12 @@ public class EmployeeController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/v1/employees")
-    public PageResponse<EmployeeManagerResponse> getEmployees(@RequestParam(value = "max", defaultValue = "5") int max,
-                                                              @RequestParam(value = "page", defaultValue =  "1") int page) {
+    public PageResponse<EmployeeResponse> getEmployees(@RequestParam(value = "max", defaultValue = "5") int max,
+                                                       @RequestParam(value = "page", defaultValue =  "1") int page) {
         Page<Employee> employees = employeeService.fetchEmployees(max, page);
-        List<EmployeeManagerResponse> employeeManagerResponseList = employees.getContent().stream().map(EmployeeManagerResponse::new)
-                .collect(Collectors.toList());
-        return new PageResponse<>(employeeService.fetchTotalEmployee(), page, employeeManagerResponseList);
+        List<EmployeeResponse> employeeResponseList = employees.getContent().stream()
+                .map(EmployeeResponse::new).collect(Collectors.toList());
+        return new PageResponse<>(employeeService.fetchTotalEmployee(), page, employeeResponseList);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -42,8 +43,17 @@ public class EmployeeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("api/v1/employees/manager")
-    public EmployeeManagerResponse createEmployee(@RequestParam(value = "adminId") Long adminId, @RequestBody EmployeeManagerRequest managerRequest) {
+    public EmployeeResponse createManager(@RequestParam(value = "adminId") Long adminId,
+                                           @RequestBody EmployeeManagerRequest managerRequest) {
         Employee employee = employeeService.createEmployeeManager(adminId, managerRequest);
-        return new EmployeeManagerResponse(employee);
+        return new EmployeeResponse(employee);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("api/v1/employees/member")
+    public EmployeeResponse createMember(@RequestParam(value = "adminId") Long adminId,
+                                         @RequestBody EmployeeMemberRequest memberRequest) {
+        Employee employee = employeeService.createEmployeeMember(adminId, memberRequest);
+        return new EmployeeResponse(employee);
     }
 }

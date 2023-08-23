@@ -6,20 +6,22 @@ import com.synacy.leavemanagement.model.Employee;
 import lombok.Getter;
 
 @Getter
-public class EmployeeManagerResponse {
+public class EmployeeResponse {
     private final Long id;
     private final String name;
     private final RoleType roleType;
     private final Integer totalLeaves;
     private final Integer currentLeaves;
     private final EmployeeStatus employeeStatus;
+    private final String manager;
 
-    public EmployeeManagerResponse(Employee employee) {
+    public EmployeeResponse(Employee employee) {
         this.id = employee.getId();
         this.name = employee.getName();
         this.roleType = employee.getRoleType();
         this.totalLeaves = employee.getTotalLeaves();
         this.currentLeaves = employee.getCurrentLeaves();
         this.employeeStatus = employee.getEmployeeStatus();
+        this.manager = employee.getManager().getName();
     }
 }

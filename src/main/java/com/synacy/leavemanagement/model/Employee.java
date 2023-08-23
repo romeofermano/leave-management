@@ -30,7 +30,7 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Employee.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
     private Employee manager;
 
@@ -38,12 +38,13 @@ public class Employee {
 
     }
 
-    public Employee(String name, RoleType roleType, Integer totalLeaves) {
+    public Employee(String name, RoleType roleType, Integer totalLeaves, Employee manager) {
         this.name = name;
         this.roleType = roleType;
         this.totalLeaves = totalLeaves;
         this.currentLeaves = 0;
         this.employeeStatus = EmployeeStatus.ACTIVE;
+        this.manager = manager;
     }
 
     public Employee(String name) {
