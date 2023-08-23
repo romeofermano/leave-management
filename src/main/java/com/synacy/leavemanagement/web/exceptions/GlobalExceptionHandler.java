@@ -14,6 +14,12 @@ public class GlobalExceptionHandler {
         return new ApiErrorResponse("INVALID_RIGHTS", e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidPaginationException.class)
+    public ApiErrorResponse handleInvalidPaginationException(InvalidPaginationException e) {
+        return new ApiErrorResponse(e.getErrorCode(), e.getErrorMessage());
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
     public ApiErrorResponse handleUserNotFoundException(UserNotFoundException e) {

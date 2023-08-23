@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Entity
@@ -42,8 +43,20 @@ public class Leave {
     @Column(nullable = false)
     LeaveStatus leaveStatus;
 
+    public Leave(Employee employee, LocalDate startDate, LocalDate endDate, String reason) {
+        this.employee = employee;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.days = (int) daysDifference(startDate, endDate);
+        this.reason = reason;
+    }
+
     public Leave(){
 
+    }
+
+    private long daysDifference(LocalDate startDate, LocalDate endDate){
+        return ChronoUnit.DAYS.between(startDate, endDate);
     }
 
 }

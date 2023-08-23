@@ -12,6 +12,5 @@ public class LeaveRequest {
     Long employee_id;
     LocalDate startDate;
     LocalDate endDate;
-    Integer days;
     String reason;
 }

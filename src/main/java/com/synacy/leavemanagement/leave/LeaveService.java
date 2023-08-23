@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,14 +44,9 @@ public class LeaveService {
         return leaveRepository.findAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING, pageable);
     }
     Leave createLeave(LeaveRequest leaveRequest){
-        Leave leave = new Leave();
         Optional<Employee> optionalEmployee = Optional.ofNullable(employeeService.fetchEmployeeById(leaveRequest.getEmployee_id()));
         Employee employee = optionalEmployee.get();
-        leave.setEmployee(employee);
-        leave.setStartDate(leaveRequest.getStartDate());
-        leave.setEndDate(leaveRequest.getEndDate());
-        leave.setDays(leaveRequest.getDays());
-        leave.setReason(leaveRequest.getReason());
+        Leave leave = new Leave(employee, leaveRequest.getStartDate(), leaveRequest.getEndDate(), leaveRequest.getReason());
         leave.setLeaveStatus(LeaveStatus.PENDING);
 
          return leaveRepository.save(leave);
@@ -62,6 +55,8 @@ public class LeaveService {
     Leave approveLeave(Long id){
         Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
         leave.setLeaveStatus(LeaveStatus.APPROVED);
+        Employee employee = employeeService.fetchEmployeeById(leave.getEmployee().getId());
+        employee.setCurrentLeaves(employee.getCurrentLeaves()-leave.getDays());
         return leaveRepository.save(leave);
     }
 
@@ -77,5 +72,9 @@ public class LeaveService {
 
     int fetchTotalLeavesOfEmployeeCount(Long employeeId){
         return (int) leaveRepository.countAllByEmployee_Id(employeeId);
+    }
+
+    int fetchTotalEmployeeLeaveUnderManagerCount(Long managerId){
+        return (int) leaveRepository.countAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING);
     }
 }
