@@ -88,4 +88,8 @@ public class EmployeeService {
         }
         throw new InvalidAdminException("Only HR Admin can create new employee");
     }
+
+    public Employee updateEmployeeManager(Long adminId, EmployeeManagerRequest managerRequest) {
+        return null;
+    }
 }

@@ -147,4 +147,8 @@ class EmployeeServiceSpec extends Specification {
             0 == savedMember.getCurrentLeaves()
         }
     }
+
+    def "updateEmployeeManager should update existing manager with the correct values "() {
+
+    }
 }
