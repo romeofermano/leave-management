@@ -126,13 +126,13 @@ class EmployeeServiceSpec extends Specification {
         Long adminId = 1L
         Long managerId = 3L
         Employee admin = new Employee("Admin")
-        Employee manager = Mock(Employee)
-        manager.getId() >> managerId
+        Employee manager = new Employee("Manager", RoleType.MANAGER, 10, admin)
         EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
-                totalLeaves: 15, managerId: manager.getId())
+                totalLeaves: 15, managerId: managerId)
 
         and:
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(admin)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
 
         when:
         employeeService.createEmployeeMember(adminId, memberRequest)

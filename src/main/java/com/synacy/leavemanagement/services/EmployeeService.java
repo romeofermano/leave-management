@@ -74,10 +74,18 @@ public class EmployeeService {
             employeeRepository.save(employee);
             return employee;
         }
-        throw new InvalidAdminException("Only HR Admins can create new members");
+        throw new InvalidAdminException("Only HR Admins can create new employee");
     }
 
     public Employee createEmployeeMember(Long adminId, EmployeeMemberRequest memberRequest) {
-        return null;
+        Optional<Employee> employeeOptional = findEmployeeAdminById(adminId);
+        if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
+            Employee employee = new Employee(memberRequest.getName(), memberRequest.getRoleType(),
+                    memberRequest.getTotalLeaves(), getManagerById(memberRequest.getManagerId()));
+
+            employeeRepository.save(employee);
+            return employee;
+        }
+        throw new InvalidAdminException("Only HR Admin can create new employee");
     }
 }

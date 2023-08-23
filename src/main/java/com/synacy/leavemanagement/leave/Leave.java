@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 @Getter
 @Entity
+@Table(name = "leave")
 public class Leave {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "leave_sequence")
@@ -45,5 +46,4 @@ public class Leave {
     public Leave(){
 
     }
-
 }

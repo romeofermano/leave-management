@@ -30,7 +30,7 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Employee.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
     private Employee manager;
 
