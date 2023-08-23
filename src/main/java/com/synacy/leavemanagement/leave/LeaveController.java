@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,7 @@ public class LeaveController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "employeeId", required = false) Long employeeId
     ){
-        int totalCount = 0;
+        int totalCount;
         Page<Leave> leaves;
 
         if (employeeId != null){
@@ -53,7 +52,7 @@ public class LeaveController {
             return new PageResponse<>(totalCount, page, leaveResponseList);
     }
 
-    //TODO: POST Leave
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("api/v1/leave")
     public LeaveResponse createLeave(
@@ -62,15 +61,22 @@ public class LeaveController {
         Leave leave = leaveService.createLeave(leaveRequest);
         return new LeaveResponse(leave);
     }
-    //TODO: PUT LeaveStatus (rejected, accepted)
 
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PutMapping("api/v1/leave/{id}")
-    public LeaveResponse updateLeave(
-            @PathVariable Long id,
-            @RequestParam("leaveStatus") String leaveStatus
+    @PutMapping("api/v1/leave/approve/{id}")
+    public LeaveResponse approveLeave(
+            @PathVariable Long id
     ){
-        Leave leave = leaveService.updateLeave(id, leaveStatus);
+        Leave leave = leaveService.approveLeave(id);
+        return new LeaveResponse(leave);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping("api/v1/leave/reject/{id}")
+    public LeaveResponse rejectLeave(
+            @PathVariable Long id
+    ){
+        Leave leave = leaveService.rejectLeave(id);
         return new LeaveResponse(leave);
     }
 }

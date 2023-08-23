@@ -43,7 +43,7 @@ public class LeaveService {
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
 
-        return leaveRepository.findAllByEmployeeManager_Id(managerId, pageable);
+        return leaveRepository.findAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING, pageable);
     }
     Leave createLeave(LeaveRequest leaveRequest){
         Leave leave = new Leave();
@@ -59,16 +59,16 @@ public class LeaveService {
          return leaveRepository.save(leave);
     }
 
-    Leave updateLeave(Long id, String leaveStatus){
-        Optional<Leave> optionalLeave = Optional.ofNullable(fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new));
-        Leave leave = optionalLeave.get();
-        if(leaveStatus.equalsIgnoreCase("approve")){
-            leave.setLeaveStatus(LeaveStatus.APPROVED);
-        }else{
-            leave.setLeaveStatus(LeaveStatus.REJECTED);
-        }
+    Leave approveLeave(Long id){
+        Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
+        leave.setLeaveStatus(LeaveStatus.APPROVED);
         return leaveRepository.save(leave);
+    }
 
+    Leave rejectLeave(Long id){
+        Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
+        leave.setLeaveStatus(LeaveStatus.REJECTED);
+        return leaveRepository.save(leave);
     }
 
     int fetchTotalLeavesCount(){

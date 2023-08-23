@@ -1,5 +1,6 @@
 package com.synacy.leavemanagement.leave;
 
+import com.synacy.leavemanagement.enums.LeaveStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,7 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
     Page<Leave> findAllByEmployee_Id(Long id, Pageable pageable);
 
-    Page<Leave> findAllByEmployeeManager_Id(Long id, Pageable pageable);
+    Page<Leave> findAllByEmployeeManager_IdAndLeaveStatus(Long id, LeaveStatus leaveStatus, Pageable pageable);
     long countAllBy();
 
     long countAllByEmployee_Id(Long id);
