@@ -17,7 +17,6 @@ public class Leave {
     @Column(nullable = false)
     Long id;
 
-
     @Setter
     @ManyToOne(targetEntity = Employee.class, cascade = {CascadeType.ALL})
     @JoinColumn(name = "employee_id")

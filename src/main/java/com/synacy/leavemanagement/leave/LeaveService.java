@@ -1,5 +1,6 @@
 package com.synacy.leavemanagement.leave;
 
+import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import com.synacy.leavemanagement.enums.LeaveStatus;
 import com.synacy.leavemanagement.model.Employee;
 import com.synacy.leavemanagement.services.EmployeeService;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +32,19 @@ public class LeaveService {
         return leaveRepository.findAllByOrderById(pageable);
     }
 
+    Page<Leave> fetchLeavesByEmpId (int max, int page, Long employeeId){
+        int offset = page - 1;
+        Pageable pageable = PageRequest.of(offset, max);
+
+        return leaveRepository.findAllByEmployee_Id(employeeId, pageable);
+    }
+
+    Page<Leave> fetchLeavesUnderManager (int max, int page, Long managerId){
+        int offset = page - 1;
+        Pageable pageable = PageRequest.of(offset, max);
+
+        return leaveRepository.findAllByEmployeeManager_Id(managerId, pageable);
+    }
     Leave createLeave(LeaveRequest leaveRequest){
         Leave leave = new Leave();
         Optional<Employee> optionalEmployee = Optional.ofNullable(employeeService.fetchEmployeeById(leaveRequest.getEmployee_id()));
@@ -44,13 +59,23 @@ public class LeaveService {
          return leaveRepository.save(leave);
     }
 
-    Leave updateLeave(Long id, LeaveRequest leaveRequest){
-        Optional<Leave> optionalLeave = this.fetchLeaveId(id);
+    Leave updateLeave(Long id, String leaveStatus){
+        Optional<Leave> optionalLeave = Optional.ofNullable(fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new));
+        Leave leave = optionalLeave.get();
+        if(leaveStatus.equalsIgnoreCase("approve")){
+            leave.setLeaveStatus(LeaveStatus.APPROVED);
+        }else{
+            leave.setLeaveStatus(LeaveStatus.REJECTED);
+        }
+        return leaveRepository.save(leave);
 
-        return new Leave();
     }
 
     int fetchTotalLeavesCount(){
-        return (int) leaveRepository.countAll();
+        return (int) leaveRepository.countAllBy();
+    }
+
+    int fetchTotalLeavesOfEmployeeCount(Long employeeId){
+        return (int) leaveRepository.countAllByEmployee_Id(employeeId);
     }
 }

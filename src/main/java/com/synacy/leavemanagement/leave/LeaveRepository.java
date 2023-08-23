@@ -9,5 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
     Page<Leave> findAllByOrderById(Pageable pageable);
 
-    long countAll();
+    Page<Leave> findAllByEmployee_Id(Long id, Pageable pageable);
+
+    Page<Leave> findAllByEmployeeManager_Id(Long id, Pageable pageable);
+    long countAllBy();
+
+    long countAllByEmployee_Id(Long id);
 }
