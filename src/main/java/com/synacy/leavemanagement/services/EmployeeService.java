@@ -69,7 +69,7 @@ public class EmployeeService {
         Optional<Employee> employeeOptional = findEmployeeAdminById(adminId);
         if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
             Employee employee = new Employee(managerRequest.getName(), managerRequest.getRoleType(),
-                    managerRequest.getTotalLeaves());
+                    managerRequest.getTotalLeaves(), employeeOptional.get());
 
             employeeRepository.save(employee);
             return employee;

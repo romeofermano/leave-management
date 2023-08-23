@@ -5,6 +5,7 @@ import com.synacy.leavemanagement.enums.RoleType
 import com.synacy.leavemanagement.model.Employee
 import com.synacy.leavemanagement.repository.EmployeeRepository
 import com.synacy.leavemanagement.request.EmployeeManagerRequest
+import com.synacy.leavemanagement.request.EmployeeMemberRequest
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -38,7 +39,7 @@ class EmployeeServiceSpec extends Specification {
     def "fetchEmployeeById should fetch employee by id with the employee status is active"() {
         given:
         Long employeeId = 1L
-        Employee employee = new Employee("Member", RoleType.MEMBER, 10)
+        Employee employee = new Employee("Member", RoleType.MEMBER, 10, Mock(Employee))
 
         when:
         Employee result = employeeService.fetchEmployeeById(employeeId)
@@ -54,10 +55,10 @@ class EmployeeServiceSpec extends Specification {
         int page = 1
         RoleType roleTypeManager = RoleType.MANAGER
         RoleType roleTypeMember = RoleType.MEMBER
-        Page<Employee> employees = new PageImpl<>([new Employee("Employee 1", roleTypeManager, 25),
-                                                   new Employee("Employee 2", roleTypeMember, 20),
-                                                   new Employee("Employee 3", roleTypeManager, 25),
-                                                   new Employee("Employee 2", roleTypeMember, 20)])
+        Page<Employee> employees = new PageImpl<>([new Employee("Employee 1", roleTypeManager, 25, Mock(Employee)),
+                                                   new Employee("Employee 2", roleTypeMember, 20, Mock(Employee)),
+                                                   new Employee("Employee 3", roleTypeManager, 25, Mock(Employee)),
+                                                   new Employee("Employee 2", roleTypeMember, 20, Mock(Employee))])
 
         when:
         Page<Employee> result = employeeService.fetchEmployees(max, page)
@@ -70,8 +71,8 @@ class EmployeeServiceSpec extends Specification {
 
     def "fetchListEmployee should fetch list of employee with the employee status is active"() {
         given:
-        List<Employee> employees = [new Employee("Member 1", RoleType.MEMBER, 10),
-                                    new Employee("Manager 1", RoleType.MANAGER, 10),
+        List<Employee> employees = [new Employee("Member 1", RoleType.MEMBER, 10, Mock(Employee)),
+                                    new Employee("Manager 1", RoleType.MANAGER, 10, Mock(Employee)),
                                     new Employee("Admin 1")]
 
         when:
@@ -79,17 +80,17 @@ class EmployeeServiceSpec extends Specification {
 
         then:
         1 * employeeRepository.findAllByEmployeeStatus(EmployeeStatus.ACTIVE) >> employees
-        result.containsAll(employees)
+        result[0] == employees[0]
+        result[1] == employees[1]
+        result[2] == employees[2]
     }
 
-    def "createEmployeeManager should create new member with the correct values when the creator is HR Admin"() {
+    def "createEmployeeManager should create new manager with the correct values when the creator is HR Admin"() {
         given:
         Long adminId = 1L
-        Long managerId = 6L
         Employee employeeAdmin = new Employee("Admin")
-        Employee manager = new Employee("Manager 1", RoleType.MANAGER, 10)
         EmployeeManagerRequest employeeRequest = new EmployeeManagerRequest(name: "Robot", totalLeaves: 10,
-                roleType: RoleType.MEMBER)
+                roleType: RoleType.MANAGER)
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
@@ -109,7 +110,7 @@ class EmployeeServiceSpec extends Specification {
     def "createEmployeeManager should throw InvalidAdminException when creating a new member is not HR_ADMIN"() {
         given:
         Long id = 1L
-        Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15)
+        Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15, Mock(Employee))
         EmployeeManagerRequest managerRequest = Mock(EmployeeManagerRequest)
 
         when:
@@ -118,5 +119,32 @@ class EmployeeServiceSpec extends Specification {
         then:
         1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
         thrown(InvalidAdminException)
+    }
+
+    def "createEmployeeMember should create new member with the correct values when the creator is HR Admin"() {
+        given:
+        Long adminId = 1L
+        Long managerId = 3L
+        Employee admin = new Employee("Admin")
+        Employee manager = Mock(Employee)
+        manager.getId() >> managerId
+        EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
+                totalLeaves: 15, managerId: manager.getId())
+
+        and:
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(admin)
+
+        when:
+        employeeService.createEmployeeMember(adminId, memberRequest)
+
+        then:
+        1 * employeeRepository.save(_) >> { Employee savedMember ->
+            memberRequest.getName() == savedMember.getName()
+            memberRequest.getRoleType() == savedMember.getRoleType()
+            memberRequest.getTotalLeaves() == savedMember.getTotalLeaves()
+            memberRequest.getManagerId() == savedMember.getManager().getId()
+            EmployeeStatus.ACTIVE == savedMember.getEmployeeStatus()
+            0 == savedMember.getCurrentLeaves()
+        }
     }
 }
