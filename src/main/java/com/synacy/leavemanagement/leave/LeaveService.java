@@ -49,14 +49,14 @@ public class LeaveService {
         return leaveRepository.findAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING, pageable);
     }
 
+//    TODO: Add exception for when leave isn't of status pending
     Optional<Leave> fetchPendingLeave(Long id){
         return Optional.ofNullable(leaveRepository.findByIdAndLeaveStatus(id, LeaveStatus.PENDING));
     }
 
     Leave createLeave(LeaveRequest leaveRequest){
+        Employee employee = employeeService.fetchEmployeeById(leaveRequest.getEmployee_id());
 
-        Optional<Employee> optionalEmployee = Optional.ofNullable(employeeService.fetchEmployeeById(leaveRequest.getEmployee_id()));
-        Employee employee = optionalEmployee.get();
         Leave leave = new Leave(employee, leaveRequest.getStartDate(), leaveRequest.getEndDate(), leaveRequest.getReason());
         leave.setLeaveStatus(LeaveStatus.PENDING);
         employee.deductLeave(leave.getDays());
@@ -64,15 +64,13 @@ public class LeaveService {
         return leaveRepository.save(leave);
     }
 
-    Leave approveLeave(Long id) {
-        Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
+    Leave approveLeave(Leave leave) {
         leave.setLeaveStatus(LeaveStatus.APPROVED);
 
         return leaveRepository.save(leave);
     }
 
-    Leave rejectLeave(Long id) {
-        Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
+    Leave rejectLeave(Leave leave) {
         leave.setLeaveStatus(LeaveStatus.REJECTED);
         Employee employee = employeeService.fetchEmployeeById(leave.getEmployee().getId());
         employee.addLeave(leave.getDays());
