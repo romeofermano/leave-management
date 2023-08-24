@@ -41,7 +41,8 @@ public class EmployeeService {
     }
 
     public Employee fetchEmployeeById(Long id) {
-        Optional<Employee> employee = employeeRepository.findByIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE);
+        Optional<Employee> employee = employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(id,
+                EmployeeStatus.ACTIVE, Arrays.asList(RoleType.MEMBER, RoleType.MANAGER));
         return employee.orElseThrow(() -> new UserNotFoundException("Employee not found"));
     }
 
@@ -87,12 +88,14 @@ public class EmployeeService {
         throw new InvalidAdminException("Only HR Admin can create new employee");
     }
 
-    public void terminateEmployee(Long adminId, Employee employee) {
+    public void terminateEmployee(Long adminId, Long employeeId) {
         Optional<Employee> adminOptional = getEmployeeAdminById(adminId);
         if (adminOptional.isPresent() && adminOptional.get().getRoleType() == RoleType.HR_ADMIN) {
+            Employee employee = fetchEmployeeById(employeeId);
             employee.terminate();
             employeeRepository.save(employee);
+        } else {
+            throw new InvalidAdminException("Only HR Admin can terminate employee");
         }
-        throw new InvalidAdminException("Only HR Admin can terminate employee");
     }
 }
