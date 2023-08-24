@@ -58,4 +58,8 @@ public class Leave {
     private long daysDifference(LocalDate startDate, LocalDate endDate){
         return ChronoUnit.DAYS.between(startDate, endDate);
     }
+
+    void cancel(){
+        this.setLeaveStatus(LeaveStatus.CANCELLED);
+    }
 }

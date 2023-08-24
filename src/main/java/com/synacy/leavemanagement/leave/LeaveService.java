@@ -1,5 +1,6 @@
 package com.synacy.leavemanagement.leave;
 
+import com.synacy.leavemanagement.enums.RoleType;
 import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import com.synacy.leavemanagement.enums.LeaveStatus;
 import com.synacy.leavemanagement.model.Employee;
@@ -27,7 +28,7 @@ public class LeaveService {
     Page<Leave> fetchLeaves (int max, int page){
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
-        return leaveRepository.findAllByOrderById(pageable);
+        return leaveRepository.findAllExceptHRAdmin(RoleType.HR_ADMIN, pageable);
     }
 
     Page<Leave> fetchLeavesByEmpId (int max, int page, Long employeeId){
@@ -43,6 +44,11 @@ public class LeaveService {
 
         return leaveRepository.findAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING, pageable);
     }
+
+    Optional<Leave> fetchPendingLeave(Long id){
+        return Optional.ofNullable(leaveRepository.findByIdAndLeaveStatus(id, LeaveStatus.PENDING));
+    }
+
     Leave createLeave(LeaveRequest leaveRequest){
         Optional<Employee> optionalEmployee = Optional.ofNullable(employeeService.fetchEmployeeById(leaveRequest.getEmployee_id()));
         Employee employee = optionalEmployee.get();
@@ -64,6 +70,11 @@ public class LeaveService {
         Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
         leave.setLeaveStatus(LeaveStatus.REJECTED);
         return leaveRepository.save(leave);
+    }
+
+    void cancelLeave(Leave leave){
+        leave.cancel();
+        leaveRepository.save(leave);
     }
 
     int fetchTotalLeavesCount(){
