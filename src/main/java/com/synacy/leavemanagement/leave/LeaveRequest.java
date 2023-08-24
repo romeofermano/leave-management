@@ -1,6 +1,5 @@
 package com.synacy.leavemanagement.leave;
 
-import com.synacy.leavemanagement.enums.LeaveStatus;
 import lombok.Getter;
 import lombok.Setter;
 

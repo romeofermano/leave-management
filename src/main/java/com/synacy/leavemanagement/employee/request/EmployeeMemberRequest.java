@@ -1,4 +1,4 @@
-package com.synacy.leavemanagement.request;
+package com.synacy.leavemanagement.employee.request;
 
 import com.synacy.leavemanagement.enums.RoleType;
 import lombok.Getter;

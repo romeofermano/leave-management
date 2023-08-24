@@ -1,4 +1,4 @@
-package com.synacy.leavemanagement.model;
+package com.synacy.leavemanagement.employee;
 
 import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.enums.RoleType;
@@ -47,12 +47,6 @@ public class Employee {
         this.manager = manager;
     }
 
-    public Employee(String name) {
-        this.name = name;
-        this.roleType = RoleType.HR_ADMIN;
-        this.employeeStatus = EmployeeStatus.ACTIVE;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -79,5 +73,9 @@ public class Employee {
 
     public void setManager(Employee manager) {
         this.manager = manager;
+    }
+
+    public void terminate() {
+        this.employeeStatus = EmployeeStatus.TERMINATED;
     }
 }

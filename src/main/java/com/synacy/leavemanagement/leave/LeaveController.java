@@ -44,12 +44,12 @@ public class LeaveController {
         return new PageResponse<>(totalCount, page, leaveResponsesList);
     }
 
-    @GetMapping("api/v1/leave/{employeeId}")
+    @GetMapping("api/v1/leave")
     public PageResponse<LeaveResponse> fetchEmployeeLeaves(
             @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @PathVariable Long employeeId
-    ){
+            @RequestParam(value = "employeeId", required = false) Long employeeId
+    ) {
         int totalCount;
         Page<Leave> leaves;
         if(max < 1 || page < 1){
@@ -58,8 +58,13 @@ public class LeaveController {
             );
         }
 
-         leaves = leaveService.fetchLeavesByEmpId(max, page, employeeId);
-         totalCount = leaveService.fetchTotalLeavesOfEmployeeCount(employeeId);
+        if (employeeId != null) {
+            leaves = leaveService.fetchLeavesByEmpId(max, page, employeeId);
+            totalCount = leaveService.fetchTotalLeavesOfEmployeeCount(employeeId);
+        } else {
+            leaves = leaveService.fetchLeaves(max, page);
+            totalCount = leaveService.fetchTotalLeavesCount();
+        }
 
         List<LeaveResponse> leaveResponsesList = leaves.getContent().stream().map(LeaveResponse::new).collect(Collectors.toList());
         return new PageResponse<>(totalCount, page, leaveResponsesList);
@@ -69,17 +74,17 @@ public class LeaveController {
     public PageResponse<LeaveResponse> fetchLeavesUnderManager(
             @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @PathVariable Long id
+            @RequestParam(value = "employeeId") Long managerId
     ){
         if(max < 1 || page < 1){
             throw new InvalidPaginationException(
                     "INVALID_PAGINATION", "Invalid pagination parameters. Max or Page cannot be less than 1."
             );
         }
-        int totalCount = leaveService.fetchTotalEmployeeLeaveUnderManagerCount(id);
-        Page<Leave> leaves = leaveService.fetchLeavesUnderManager(max, page, id);
-            List<LeaveResponse> leaveResponseList = leaves.getContent().stream().map(LeaveResponse::new).toList();
-            return new PageResponse<>(totalCount, page, leaveResponseList);
+        int totalCount = leaveService.fetchTotalEmployeeLeaveUnderManagerCount(managerId);
+        Page<Leave> leaves = leaveService.fetchLeavesUnderManager(max, page, managerId);
+        List<LeaveResponse> leaveResponseList = leaves.getContent().stream().map(LeaveResponse::new).toList();
+        return new PageResponse<>(totalCount, page, leaveResponseList);
     }
 
 
@@ -88,7 +93,7 @@ public class LeaveController {
     @PostMapping("api/v1/leave")
     public LeaveResponse createLeave(
             @RequestBody LeaveRequest leaveRequest
-    ){
+    ) {
         Leave leave = leaveService.createLeave(leaveRequest);
         return new LeaveResponse(leave);
     }
@@ -97,7 +102,7 @@ public class LeaveController {
     @PutMapping("api/v1/leave/approve/{id}")
     public LeaveResponse approveLeave(
             @PathVariable Long id
-    ){
+    ) {
         Leave leave = leaveService.approveLeave(id);
         return new LeaveResponse(leave);
     }
@@ -106,7 +111,7 @@ public class LeaveController {
     @PutMapping("api/v1/leave/reject/{id}")
     public LeaveResponse rejectLeave(
             @PathVariable Long id
-    ){
+    ) {
         Leave leave = leaveService.rejectLeave(id);
         return new LeaveResponse(leave);
     }

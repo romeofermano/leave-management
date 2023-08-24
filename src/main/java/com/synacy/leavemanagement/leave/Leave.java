@@ -1,7 +1,7 @@
 package com.synacy.leavemanagement.leave;
 
+import com.synacy.leavemanagement.employee.Employee;
 import com.synacy.leavemanagement.enums.LeaveStatus;
-import com.synacy.leavemanagement.model.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,6 +55,7 @@ public class Leave {
     public Leave(){
 
     }
+
     private long daysDifference(LocalDate startDate, LocalDate endDate){
         return ChronoUnit.DAYS.between(startDate, endDate);
     }

@@ -1,6 +1,6 @@
 package com.synacy.leavemanagement.web.exceptions;
 
-import com.synacy.leavemanagement.response.ApiErrorResponse;
+import com.synacy.leavemanagement.web.exceptions.response.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,6 +1,7 @@
 package com.synacy.leavemanagement.controller
 
-import com.synacy.leavemanagement.services.EmployeeService
+import com.synacy.leavemanagement.employee.EmployeeController
+import com.synacy.leavemanagement.employee.EmployeeService
 import spock.lang.Specification
 
 class EmployeeControllerSpec extends Specification {
