@@ -8,6 +8,7 @@ import com.synacy.leavemanagement.employee.EmployeeRepository
 import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest
 import com.synacy.leavemanagement.employee.request.EmployeeMemberRequest
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException
+import com.synacy.leavemanagement.web.exceptions.UserNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import spock.lang.Specification
@@ -188,5 +189,22 @@ class EmployeeServiceSpec extends Specification {
 
         then:
         thrown(InvalidAdminException)
+    }
+
+    def "terminateEmployee should throw UserNotFoundException when the employee is doesn't exist"() {
+        given:
+        Long adminId = 1L
+        Long employeeId = 2L
+        Employee admin = new Employee("HR Admin")
+
+        and:
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(_ as Long, _ as EmployeeStatus, _ as Collection<RoleType>) >> Optional.empty()
+
+        when:
+        employeeService.terminateEmployee(adminId, employeeId)
+
+        then:
+        thrown(UserNotFoundException)
     }
 }
