@@ -25,14 +25,14 @@ public class LeaveController {
             @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "employeeId", required = false) Long employeeId
-    ){
+    ) {
         int totalCount;
         Page<Leave> leaves;
 
-        if (employeeId != null){
-         leaves = leaveService.fetchLeavesByEmpId(max, page, employeeId);
-         totalCount = leaveService.fetchTotalLeavesOfEmployeeCount(employeeId);
-        }else {
+        if (employeeId != null) {
+            leaves = leaveService.fetchLeavesByEmpId(max, page, employeeId);
+            totalCount = leaveService.fetchTotalLeavesOfEmployeeCount(employeeId);
+        } else {
             leaves = leaveService.fetchLeaves(max, page);
             totalCount = leaveService.fetchTotalLeavesCount();
         }
@@ -45,11 +45,11 @@ public class LeaveController {
             @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @PathVariable Long id
-    ){
+    ) {
         int totalCount = leaveService.fetchTotalLeavesCount();
         Page<Leave> leaves = leaveService.fetchLeavesUnderManager(max, page, id);
-            List<LeaveResponse> leaveResponseList = leaves.getContent().stream().map(LeaveResponse::new).toList();
-            return new PageResponse<>(totalCount, page, leaveResponseList);
+        List<LeaveResponse> leaveResponseList = leaves.getContent().stream().map(LeaveResponse::new).toList();
+        return new PageResponse<>(totalCount, page, leaveResponseList);
     }
 
 
@@ -57,7 +57,7 @@ public class LeaveController {
     @PostMapping("api/v1/leave")
     public LeaveResponse createLeave(
             @RequestBody LeaveRequest leaveRequest
-    ){
+    ) {
         Leave leave = leaveService.createLeave(leaveRequest);
         return new LeaveResponse(leave);
     }
@@ -66,7 +66,7 @@ public class LeaveController {
     @PutMapping("api/v1/leave/approve/{id}")
     public LeaveResponse approveLeave(
             @PathVariable Long id
-    ){
+    ) {
         Leave leave = leaveService.approveLeave(id);
         return new LeaveResponse(leave);
     }
@@ -75,7 +75,7 @@ public class LeaveController {
     @PutMapping("api/v1/leave/reject/{id}")
     public LeaveResponse rejectLeave(
             @PathVariable Long id
-    ){
+    ) {
         Leave leave = leaveService.rejectLeave(id);
         return new LeaveResponse(leave);
     }

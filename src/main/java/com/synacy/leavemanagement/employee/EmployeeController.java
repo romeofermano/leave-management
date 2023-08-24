@@ -25,7 +25,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/api/v1/employees")
     public PageResponse<EmployeeResponse> getEmployees(@RequestParam(value = "max", defaultValue = "5") int max,
-                                                       @RequestParam(value = "page", defaultValue =  "1") int page) {
+                                                       @RequestParam(value = "page", defaultValue = "1") int page) {
         Page<Employee> employees = employeeService.fetchEmployees(max, page);
         List<EmployeeResponse> employeeResponseList = employees.getContent().stream()
                 .map(EmployeeResponse::new).collect(Collectors.toList());
@@ -42,7 +42,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/employees/manager")
     public EmployeeResponse createManager(@RequestParam(value = "adminId") Long adminId,
-                                           @RequestBody EmployeeManagerRequest managerRequest) {
+                                          @RequestBody EmployeeManagerRequest managerRequest) {
         Employee employee = employeeService.createEmployeeManager(adminId, managerRequest);
         return new EmployeeResponse(employee);
     }

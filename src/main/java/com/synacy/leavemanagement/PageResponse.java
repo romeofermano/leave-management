@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class PageResponse <T>{
+public class PageResponse<T> {
     private int totalCount;
 
     private int pageNumber;

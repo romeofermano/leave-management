@@ -1,7 +1,7 @@
 package com.synacy.leavemanagement.leave;
 
-import com.synacy.leavemanagement.enums.LeaveStatus;
 import com.synacy.leavemanagement.employee.Employee;
+import com.synacy.leavemanagement.enums.LeaveStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,7 +43,7 @@ public class Leave {
     @Column(nullable = false)
     LeaveStatus leaveStatus;
 
-    public Leave(){
+    public Leave() {
 
     }
 }
