@@ -80,4 +80,8 @@ public class Employee {
     public void setManager(Employee manager) {
         this.manager = manager;
     }
+
+    public void terminate() {
+        this.employeeStatus = EmployeeStatus.TERMINATED;
+    }
 }

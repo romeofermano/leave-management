@@ -1,7 +1,7 @@
-package com.synacy.leavemanagement.response;
+package com.synacy.leavemanagement.employee;
 
 import com.synacy.leavemanagement.enums.RoleType;
-import com.synacy.leavemanagement.model.Employee;
+import com.synacy.leavemanagement.employee.Employee;
 import lombok.Getter;
 
 @Getter
