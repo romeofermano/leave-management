@@ -70,11 +70,11 @@ public class LeaveController {
         return new PageResponse<>(totalCount, page, leaveResponsesList);
     }
 
-    @GetMapping("api/v1/leave/manager/{id}")
+    @GetMapping("api/v1/leave/manager")
     public PageResponse<LeaveResponse> fetchLeavesUnderManager(
             @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "employeeId") Long managerId
+            @RequestParam(value = "managerId") Long managerId
     ){
         if(max < 1 || page < 1){
             throw new InvalidPaginationException(

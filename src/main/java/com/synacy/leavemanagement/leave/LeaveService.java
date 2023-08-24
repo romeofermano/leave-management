@@ -1,11 +1,11 @@
 package com.synacy.leavemanagement.leave;
 
+import com.synacy.leavemanagement.employee.EmployeeRepository;
 import com.synacy.leavemanagement.enums.RoleType;
 import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import com.synacy.leavemanagement.employee.Employee;
 import com.synacy.leavemanagement.employee.EmployeeService;
 import com.synacy.leavemanagement.enums.LeaveStatus;
-import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +17,12 @@ public class LeaveService {
     private final LeaveRepository leaveRepository;
     private final EmployeeService employeeService;
 
-    public LeaveService(LeaveRepository leaveRepository, EmployeeService employeeService) {
+    private final EmployeeRepository employeeRepository;
+
+    public LeaveService(LeaveRepository leaveRepository, EmployeeService employeeService, EmployeeRepository employeeRepository) {
         this.leaveRepository = leaveRepository;
         this.employeeService = employeeService;
+        this.employeeRepository = employeeRepository;
     }
 
     Optional<Leave> fetchLeaveId(Long id) {
@@ -56,26 +59,32 @@ public class LeaveService {
         Employee employee = optionalEmployee.get();
         Leave leave = new Leave(employee, leaveRequest.getStartDate(), leaveRequest.getEndDate(), leaveRequest.getReason());
         leave.setLeaveStatus(LeaveStatus.PENDING);
-
+        employee.deductLeave(leave.getDays());
+        employeeRepository.save(employee);
         return leaveRepository.save(leave);
     }
 
     Leave approveLeave(Long id) {
         Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
         leave.setLeaveStatus(LeaveStatus.APPROVED);
-        Employee employee = employeeService.fetchEmployeeById(leave.getEmployee().getId());
-        employee.setCurrentLeaves(employee.getCurrentLeaves()-leave.getDays());
+
         return leaveRepository.save(leave);
     }
 
     Leave rejectLeave(Long id) {
         Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
         leave.setLeaveStatus(LeaveStatus.REJECTED);
+        Employee employee = employeeService.fetchEmployeeById(leave.getEmployee().getId());
+        employee.addLeave(leave.getDays());
+        employeeRepository.save(employee);
         return leaveRepository.save(leave);
     }
 
     void cancelLeave(Leave leave){
         leave.cancel();
+        Employee employee = employeeService.fetchEmployeeById(leave.getEmployee().getId());
+        employee.addLeave(leave.getDays());
+        employeeRepository.save(employee);
         leaveRepository.save(leave);
     }
 

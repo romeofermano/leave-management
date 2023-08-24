@@ -78,4 +78,12 @@ public class Employee {
     public void terminate() {
         this.employeeStatus = EmployeeStatus.TERMINATED;
     }
+
+    public void deductLeave(Integer days){
+        this.setCurrentLeaves(this.getCurrentLeaves() - days);
+    }
+
+    public void addLeave(Integer days){
+        this.setCurrentLeaves(this.getCurrentLeaves() + days );
+    }
 }
