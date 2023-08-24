@@ -2,8 +2,8 @@ package com.synacy.leavemanagement.leave;
 
 import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import com.synacy.leavemanagement.enums.LeaveStatus;
-import com.synacy.leavemanagement.model.Employee;
-import com.synacy.leavemanagement.services.EmployeeService;
+import com.synacy.leavemanagement.employee.Employee;
+import com.synacy.leavemanagement.employee.EmployeeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

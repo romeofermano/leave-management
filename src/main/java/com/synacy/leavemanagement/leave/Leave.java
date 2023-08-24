@@ -1,7 +1,7 @@
 package com.synacy.leavemanagement.leave;
 
 import com.synacy.leavemanagement.enums.LeaveStatus;
-import com.synacy.leavemanagement.model.Employee;
+import com.synacy.leavemanagement.employee.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

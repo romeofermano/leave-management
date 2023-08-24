@@ -1,11 +1,12 @@
 package com.synacy.leavemanagement.services
 
+import com.synacy.leavemanagement.employee.EmployeeService
 import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
-import com.synacy.leavemanagement.model.Employee
-import com.synacy.leavemanagement.repository.EmployeeRepository
-import com.synacy.leavemanagement.request.EmployeeManagerRequest
-import com.synacy.leavemanagement.request.EmployeeMemberRequest
+import com.synacy.leavemanagement.employee.Employee
+import com.synacy.leavemanagement.employee.EmployeeRepository
+import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest
+import com.synacy.leavemanagement.employee.request.EmployeeMemberRequest
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -126,13 +127,13 @@ class EmployeeServiceSpec extends Specification {
         Long adminId = 1L
         Long managerId = 3L
         Employee admin = new Employee("Admin")
-        Employee manager = new Employee("Manager", RoleType.MANAGER, 10, admin)
+        Employee member = new Employee("Manager", RoleType.MEMBER, 10, Mock(Employee))
         EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
                 totalLeaves: 15, managerId: managerId)
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(member)
 
         when:
         employeeService.createEmployeeMember(adminId, memberRequest)
@@ -148,7 +149,25 @@ class EmployeeServiceSpec extends Specification {
         }
     }
 
-    def "updateEmployeeManager should update existing manager with the correct values "() {
+    def "terminateEmployee should terminate existing employee when the user is HR Admin"() {
+        given:
+        Long adminId = 1L
+        Employee admin = new Employee("Admin")
+        Employee existingEmployee = new Employee("Manager", RoleType.MEMBER, 10, Mock(Employee))
 
+        and:
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
+
+        when:
+        employeeService.terminateEmployee(adminId, existingEmployee)
+
+        then:
+        1 * employeeRepository.save(_) >> { Employee deletedEmployee ->
+            assert existingEmployee.getName() == deletedEmployee.getName()
+            assert existingEmployee.getRoleType() == deletedEmployee.getRoleType()
+            assert existingEmployee.getTotalLeaves() == deletedEmployee.getTotalLeaves()
+            assert existingEmployee.getManager() == deletedEmployee.getManager()
+            assert EmployeeStatus.TERMINATED == deletedEmployee.getEmployeeStatus()
+        }
     }
 }

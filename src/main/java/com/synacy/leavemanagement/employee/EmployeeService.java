@@ -1,11 +1,9 @@
-package com.synacy.leavemanagement.services;
+package com.synacy.leavemanagement.employee;
 
 import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.enums.RoleType;
-import com.synacy.leavemanagement.model.Employee;
-import com.synacy.leavemanagement.repository.EmployeeRepository;
-import com.synacy.leavemanagement.request.EmployeeManagerRequest;
-import com.synacy.leavemanagement.request.EmployeeMemberRequest;
+import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest;
+import com.synacy.leavemanagement.employee.request.EmployeeMemberRequest;
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException;
 import com.synacy.leavemanagement.web.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,9 +90,8 @@ public class EmployeeService {
     public void terminateEmployee(Long adminId, Employee employee) {
         Optional<Employee> adminOptional = getEmployeeAdminById(adminId);
         if (adminOptional.isPresent() && adminOptional.get().getRoleType() == RoleType.HR_ADMIN) {
-            Employee employeeOptional = fetchEmployeeById(employee.getId());
-            employeeOptional.terminate();
-            employeeRepository.save(employeeOptional);
+            employee.terminate();
+            employeeRepository.save(employee);
         }
         throw new InvalidAdminException("Only HR Admin can terminate employee");
     }

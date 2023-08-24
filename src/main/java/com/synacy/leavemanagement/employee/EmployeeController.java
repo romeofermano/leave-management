@@ -1,12 +1,10 @@
-package com.synacy.leavemanagement.controller;
+package com.synacy.leavemanagement.employee;
 
-import com.synacy.leavemanagement.model.Employee;
-import com.synacy.leavemanagement.request.EmployeeManagerRequest;
-import com.synacy.leavemanagement.request.EmployeeMemberRequest;
-import com.synacy.leavemanagement.response.EmployeeListResponse;
-import com.synacy.leavemanagement.response.EmployeeResponse;
-import com.synacy.leavemanagement.response.PageResponse;
-import com.synacy.leavemanagement.services.EmployeeService;
+import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest;
+import com.synacy.leavemanagement.employee.request.EmployeeMemberRequest;
+import com.synacy.leavemanagement.employee.response.EmployeeListResponse;
+import com.synacy.leavemanagement.employee.response.EmployeeResponse;
+import com.synacy.leavemanagement.web.exceptions.response.PageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
