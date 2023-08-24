@@ -150,6 +150,41 @@ class EmployeeServiceSpec extends Specification {
         }
     }
 
+    def "createEmployeeMember should throw InvalidAdminException when the creator is not HR Admin"() {
+        given:
+        Long adminId = 1L
+        EmployeeMemberRequest memberRequest = Mock(EmployeeMemberRequest)
+        Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15, Mock(Employee))
+
+        and:
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
+
+        when:
+        employeeService.createEmployeeMember(adminId, memberRequest)
+
+        then:
+        thrown(InvalidAdminException)
+    }
+
+    def "createEmployeeMember should throw UserNotFoundException when the manager does not exist"() {
+        given:
+        Long adminId = 1L
+        Long managerId = 3L
+        Employee employeeAdmin = new Employee("HR Admin")
+        EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
+                totalLeaves: 10, managerId: managerId)
+
+        and:
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.empty()
+
+        when:
+        employeeService.createEmployeeMember(adminId, memberRequest)
+
+        then:
+        thrown(UserNotFoundException)
+    }
+
     def "terminateEmployee should terminate existing employee when the user is HR Admin"() {
         given:
         Long adminId = 1L
@@ -199,7 +234,7 @@ class EmployeeServiceSpec extends Specification {
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(_ as Long, _ as EmployeeStatus, _ as Collection<RoleType>) >> Optional.empty()
+        employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(_ as Long, EmployeeStatus.ACTIVE, _ as Collection<RoleType>) >> Optional.empty()
 
         when:
         employeeService.terminateEmployee(adminId, employeeId)
