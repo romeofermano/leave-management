@@ -23,7 +23,7 @@ public class EmployeeController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("api/v1/employees")
+    @GetMapping("/api/v1/employees")
     public PageResponse<EmployeeResponse> getEmployees(@RequestParam(value = "max", defaultValue = "5") int max,
                                                        @RequestParam(value = "page", defaultValue =  "1") int page) {
         Page<Employee> employees = employeeService.fetchEmployees(max, page);
@@ -33,14 +33,14 @@ public class EmployeeController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("api/v1/employees/list")
+    @GetMapping("/api/v1/employees/list")
     public List<EmployeeListResponse> getListEmployees() {
         List<Employee> employees = employeeService.fetchListEmployee();
         return employees.stream().map(EmployeeListResponse::new).collect(Collectors.toList());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("api/v1/employees/manager")
+    @PostMapping("/api/v1/employees/manager")
     public EmployeeResponse createManager(@RequestParam(value = "adminId") Long adminId,
                                            @RequestBody EmployeeManagerRequest managerRequest) {
         Employee employee = employeeService.createEmployeeManager(adminId, managerRequest);
@@ -48,10 +48,16 @@ public class EmployeeController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("api/v1/employees/member")
+    @PostMapping("/api/v1/employees/member")
     public EmployeeResponse createMember(@RequestParam(value = "adminId") Long adminId,
                                          @RequestBody EmployeeMemberRequest memberRequest) {
         Employee employee = employeeService.createEmployeeMember(adminId, memberRequest);
         return new EmployeeResponse(employee);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/api/v1/employees/{employeeId}")
+    public void terminateEmployee(@RequestParam(value = "adminId") Long adminId, @PathVariable Long employeeId) {
+        employeeService.terminateEmployee(adminId, employeeId);
     }
 }
