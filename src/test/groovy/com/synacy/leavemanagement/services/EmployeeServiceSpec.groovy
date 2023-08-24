@@ -46,7 +46,7 @@ class EmployeeServiceSpec extends Specification {
         Employee result = employeeService.fetchEmployeeById(employeeId)
 
         then:
-        1 * employeeRepository.findByIdAndEmployeeStatus(employeeId, EmployeeStatus.ACTIVE) >> Optional.of(employee)
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(employeeId, EmployeeStatus.ACTIVE) >> Optional.of(employee)
         result == employee
     }
 
@@ -127,13 +127,13 @@ class EmployeeServiceSpec extends Specification {
         Long adminId = 1L
         Long managerId = 3L
         Employee admin = new Employee("Admin")
-        Employee member = new Employee("Manager", RoleType.MEMBER, 10, Mock(Employee))
+        Employee manager = new Employee("Manager", RoleType.MANAGER, 10, Mock(Employee))
         EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
                 totalLeaves: 15, managerId: managerId)
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(member)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
 
         when:
         employeeService.createEmployeeMember(adminId, memberRequest)
@@ -152,14 +152,16 @@ class EmployeeServiceSpec extends Specification {
     def "terminateEmployee should terminate existing employee when the user is HR Admin"() {
         given:
         Long adminId = 1L
+        Long employeeId = 3L
         Employee admin = new Employee("Admin")
         Employee existingEmployee = new Employee("Manager", RoleType.MEMBER, 10, Mock(Employee))
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(employeeId, EmployeeStatus.ACTIVE, [RoleType.MEMBER, RoleType.MANAGER]) >> Optional.of(existingEmployee)
 
         when:
-        employeeService.terminateEmployee(adminId, existingEmployee)
+        employeeService.terminateEmployee(adminId, employeeId)
 
         then:
         1 * employeeRepository.save(_) >> { Employee deletedEmployee ->
