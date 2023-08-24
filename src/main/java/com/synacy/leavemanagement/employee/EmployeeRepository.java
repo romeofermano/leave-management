@@ -2,7 +2,6 @@ package com.synacy.leavemanagement.employee;
 
 import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.enums.RoleType;
-import com.synacy.leavemanagement.employee.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +17,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
                                                         Pageable pageable);
     Optional<Employee> findByIdAndEmployeeStatusAndRoleType(Long id, EmployeeStatus employeeStatus, RoleType roleType);
     List<Employee> findAllByEmployeeStatus(EmployeeStatus employeeStatus);
-    Optional<Employee> findByIdAndEmployeeStatus(Long id, EmployeeStatus employeeStatus);
+    Optional<Employee> findByIdAndEmployeeStatusAndRoleTypeIn(Long id, EmployeeStatus employeeStatus, Collection<RoleType> roleType);
     int countAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus employeeStatus, Collection<RoleType> roleType);
 }
