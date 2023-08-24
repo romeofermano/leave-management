@@ -83,6 +83,7 @@ public class LeaveController {
     }
 
 
+    @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("api/v1/leave")
     public LeaveResponse createLeave(
