@@ -76,7 +76,7 @@ class EmployeeServiceSpec extends Specification {
         given:
         List<Employee> employees = [new Employee("Member 1", RoleType.MEMBER, 10, Mock(Employee)),
                                     new Employee("Manager 1", RoleType.MANAGER, 10, Mock(Employee)),
-                                    new Employee("Admin 1")]
+                                    new Employee("Admin 1", RoleType.HR_ADMIN, 0, null)]
 
         when:
         List<Employee> result = employeeService.fetchListEmployee()
@@ -91,7 +91,8 @@ class EmployeeServiceSpec extends Specification {
     def "createEmployeeManager should create new manager with the correct values when the creator is HR Admin"() {
         given:
         Long adminId = 1L
-        Employee employeeAdmin = new Employee("Admin")
+        Employee employeeAdmin = Mock(Employee)
+        employeeAdmin.getRoleType() >> RoleType.HR_ADMIN
         EmployeeManagerRequest employeeRequest = new EmployeeManagerRequest(name: "Robot", totalLeaves: 10,
                 roleType: RoleType.MANAGER)
 
@@ -128,7 +129,8 @@ class EmployeeServiceSpec extends Specification {
         given:
         Long adminId = 1L
         Long managerId = 3L
-        Employee admin = new Employee("Admin")
+        Employee admin = Mock(Employee)
+        admin.getRoleType() >> RoleType.HR_ADMIN
         Employee manager = new Employee("Manager", RoleType.MANAGER, 10, Mock(Employee))
         EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
                 totalLeaves: 15, managerId: managerId)
@@ -171,7 +173,8 @@ class EmployeeServiceSpec extends Specification {
         given:
         Long adminId = 1L
         Long managerId = 3L
-        Employee employeeAdmin = new Employee("HR Admin")
+        Employee employeeAdmin = Mock(Employee)
+        employeeAdmin.getRoleType() >> RoleType.HR_ADMIN
         EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
                 totalLeaves: 10, managerId: managerId)
 
@@ -190,7 +193,8 @@ class EmployeeServiceSpec extends Specification {
         given:
         Long adminId = 1L
         Long employeeId = 3L
-        Employee admin = new Employee("Admin")
+        Employee admin = Mock(Employee)
+        admin.getRoleType() >> RoleType.HR_ADMIN
         Employee existingEmployee = new Employee("Manager", RoleType.MEMBER, 10, Mock(Employee))
 
         and:
@@ -231,7 +235,8 @@ class EmployeeServiceSpec extends Specification {
         given:
         Long adminId = 1L
         Long employeeId = 2L
-        Employee admin = new Employee("HR Admin")
+        Employee admin = Mock(Employee)
+        admin.getRoleType() >> RoleType.HR_ADMIN
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
