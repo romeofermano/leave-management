@@ -47,7 +47,8 @@ class EmployeeServiceSpec extends Specification {
         Employee result = employeeService.fetchEmployeeById(employeeId)
 
         then:
-        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(employeeId, EmployeeStatus.ACTIVE) >> Optional.of(employee)
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(employeeId, EmployeeStatus.ACTIVE,
+                [RoleType.MEMBER, RoleType.MANAGER]) >> Optional.of(employee)
         result == employee
     }
 
