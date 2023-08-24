@@ -158,7 +158,8 @@ class EmployeeServiceSpec extends Specification {
 
         and:
         employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(employeeId, EmployeeStatus.ACTIVE, [RoleType.MEMBER, RoleType.MANAGER]) >> Optional.of(existingEmployee)
+        employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(employeeId, EmployeeStatus.ACTIVE,
+                [RoleType.MEMBER, RoleType.MANAGER]) >> Optional.of(existingEmployee)
 
         when:
         employeeService.terminateEmployee(adminId, employeeId)
@@ -171,5 +172,21 @@ class EmployeeServiceSpec extends Specification {
             assert existingEmployee.getManager() == deletedEmployee.getManager()
             assert EmployeeStatus.TERMINATED == deletedEmployee.getEmployeeStatus()
         }
+    }
+
+    def "terminateEmployee should throw InvalidAdminException when user is not HR Admin"() {
+        given:
+        Long adminId = 1L
+        Long employeeId = 2L
+        Employee employee = new Employee("Manager", RoleType.MEMBER, 10, Mock(Employee))
+
+        and:
+        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
+
+        when:
+        employeeService.terminateEmployee(adminId, employeeId)
+
+        then:
+        thrown(InvalidAdminException)
     }
 }
