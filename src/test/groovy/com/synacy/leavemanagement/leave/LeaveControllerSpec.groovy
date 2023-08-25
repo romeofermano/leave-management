@@ -106,7 +106,7 @@ class LeaveControllerSpec extends Specification {
         LeaveStatus.PENDING == actualLeave.getLeaveStatus()
     }
 
-    def "ApproveLeave"() {
+    def "approveLeave should change leave status to approved"() {
     }
 
     def "RejectLeave"() {
