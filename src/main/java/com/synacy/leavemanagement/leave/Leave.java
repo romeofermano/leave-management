@@ -52,15 +52,15 @@ public class Leave {
         this.reason = reason;
     }
 
-    public Leave(){
+    public Leave() {
 
     }
 
-    private long daysDifference(LocalDate startDate, LocalDate endDate){
+    private long daysDifference(LocalDate startDate, LocalDate endDate) {
         return ChronoUnit.DAYS.between(startDate, endDate);
     }
 
-    void cancel(){
+    void cancel() {
         this.setLeaveStatus(LeaveStatus.CANCELLED);
     }
 }

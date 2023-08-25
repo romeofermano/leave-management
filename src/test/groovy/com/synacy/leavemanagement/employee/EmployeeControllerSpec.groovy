@@ -63,7 +63,7 @@ class EmployeeControllerSpec extends Specification {
     def "getListEmployees should fetch a list of EmployeeListResponse"() {
         given:
         List<Employee> employeeList = [new Employee("Member 1", RoleType.MEMBER, 10, Mock(Employee)),
-        new Employee("Manager 1", RoleType.MANAGER, 10, Mock(Employee))]
+                                       new Employee("Manager 1", RoleType.MANAGER, 10, Mock(Employee))]
         int expectedTotalCount = 2
 
         employeeService.fetchListEmployee() >> employeeList

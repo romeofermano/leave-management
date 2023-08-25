@@ -1,15 +1,16 @@
 package com.synacy.leavemanagement.leave;
 
-import com.synacy.leavemanagement.employee.EmployeeRepository;
-import com.synacy.leavemanagement.enums.RoleType;
-import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import com.synacy.leavemanagement.employee.Employee;
+import com.synacy.leavemanagement.employee.EmployeeRepository;
 import com.synacy.leavemanagement.employee.EmployeeService;
 import com.synacy.leavemanagement.enums.LeaveStatus;
+import com.synacy.leavemanagement.enums.RoleType;
+import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -49,11 +50,11 @@ public class LeaveService {
         return leaveRepository.findAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING, pageable);
     }
 
-    Optional<Leave> fetchPendingLeave(Long id){
+    Optional<Leave> fetchPendingLeave(Long id) {
         return Optional.ofNullable(leaveRepository.findByIdAndLeaveStatus(id, LeaveStatus.PENDING));
     }
 
-    Leave createLeave(LeaveRequest leaveRequest){
+    Leave createLeave(LeaveRequest leaveRequest) {
 
         Optional<Employee> optionalEmployee = Optional.ofNullable(employeeService.fetchEmployeeById(leaveRequest.getEmployee_id()));
         Employee employee = optionalEmployee.get();
@@ -80,7 +81,7 @@ public class LeaveService {
         return leaveRepository.save(leave);
     }
 
-    void cancelLeave(Leave leave){
+    void cancelLeave(Leave leave) {
         leave.cancel();
         Employee employee = employeeService.fetchEmployeeById(leave.getEmployee().getId());
         employee.addLeave(leave.getDays());
@@ -88,7 +89,7 @@ public class LeaveService {
         leaveRepository.save(leave);
     }
 
-    int fetchTotalLeavesCount(){
+    int fetchTotalLeavesCount() {
         return (int) leaveRepository.countAllBy();
     }
 
@@ -96,7 +97,7 @@ public class LeaveService {
         return (int) leaveRepository.countAllByEmployee_Id(employeeId);
     }
 
-    int fetchTotalEmployeeLeaveUnderManagerCount(Long managerId){
+    int fetchTotalEmployeeLeaveUnderManagerCount(Long managerId) {
         return (int) leaveRepository.countAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING);
     }
 }
