@@ -4,7 +4,6 @@ import com.synacy.leavemanagement.PageResponse
 import com.synacy.leavemanagement.employee.Employee
 import com.synacy.leavemanagement.enums.LeaveStatus
 import com.synacy.leavemanagement.enums.RoleType
-import org.apache.catalina.connector.Response
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import spock.lang.Specification
