@@ -24,10 +24,9 @@ public class LeaveController {
 
     //TODO: Add exceptions
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/v1/leave/hr")
     public PageResponse<LeaveWithManagerResponse> fetchAllLeaves(
-            @RequestParam(value = "max", defaultValue = "5") int max,
+            @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page
     ) {
         int totalCount;
@@ -45,10 +44,9 @@ public class LeaveController {
         return new PageResponse<>(totalCount, page, leaveResponsesList);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/v1/leave")
     public PageResponse<LeaveResponse> fetchEmployeeLeaves(
-            @RequestParam(value = "max", defaultValue = "5") int max,
+            @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "employeeId", required = false) Long employeeId
     ) {
@@ -72,10 +70,9 @@ public class LeaveController {
         return new PageResponse<>(totalCount, page, leaveResponsesList);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/v1/leave/manager")
     public PageResponse<LeaveResponse> fetchLeavesUnderManager(
-            @RequestParam(value = "max", defaultValue = "5") int max,
+            @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "managerId") Long managerId
     ) {
@@ -106,8 +103,7 @@ public class LeaveController {
     public LeaveResponse approveLeave(
             @PathVariable Long id
     ) {
-        Leave leave = leaveService.fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
-        leaveService.approveLeave(leave);
+        Leave leave = leaveService.approveLeave(id);
         return new LeaveResponse(leave);
     }
 
@@ -116,8 +112,7 @@ public class LeaveController {
     public LeaveResponse rejectLeave(
             @PathVariable Long id
     ) {
-        Leave leave = leaveService.fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
-        leaveService.rejectLeave(leave);
+        Leave leave = leaveService.rejectLeave(id);
         return new LeaveResponse(leave);
     }
 
