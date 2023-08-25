@@ -103,7 +103,8 @@ public class LeaveController {
     public LeaveResponse approveLeave(
             @PathVariable Long id
     ) {
-        Leave leave = leaveService.approveLeave(id);
+        Leave leave = leaveService.fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
+        leaveService.approveLeave(leave);
         return new LeaveResponse(leave);
     }
 
@@ -112,7 +113,8 @@ public class LeaveController {
     public LeaveResponse rejectLeave(
             @PathVariable Long id
     ) {
-        Leave leave = leaveService.rejectLeave(id);
+        Leave leave = leaveService.fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
+        leaveService.rejectLeave(leave);
         return new LeaveResponse(leave);
     }
 
