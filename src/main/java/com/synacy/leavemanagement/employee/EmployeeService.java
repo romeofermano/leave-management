@@ -58,12 +58,6 @@ public class EmployeeService {
         return employeeRepository.findAllByEmployeeStatus(EmployeeStatus.ACTIVE);
     }
 
-    // TODO: List all employees with the employee status is active
-    // TODO: List all manager
-    // TODO: Create new employees
-    // TODO: Update existing employees
-    // TODO: Terminate employees
-
     public Employee createEmployeeManager(Long adminId, EmployeeManagerRequest managerRequest) {
         Optional<Employee> employeeOptional = getEmployeeAdminById(adminId);
         if (employeeOptional.isPresent() && employeeOptional.get().getRoleType() == RoleType.HR_ADMIN) {
