@@ -3,7 +3,6 @@ package com.synacy.leavemanagement.leave
 import com.synacy.leavemanagement.employee.Employee
 import com.synacy.leavemanagement.employee.EmployeeRepository
 import com.synacy.leavemanagement.employee.EmployeeService
-import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.LeaveStatus
 import com.synacy.leavemanagement.enums.RoleType
 import org.springframework.data.domain.Page
@@ -132,7 +131,7 @@ class LeaveServiceSpec extends Specification {
         employeeService.fetchEmployeeById(employeeId) >> employee
 
         when:
-        Leave actualLeave = leaveService.createLeave(leaveRequest)
+        leaveService.createLeave(leaveRequest)
 
         then:
         1 * leaveRepository.save(*_) >> {
