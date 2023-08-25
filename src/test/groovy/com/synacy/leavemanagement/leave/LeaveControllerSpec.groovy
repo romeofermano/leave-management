@@ -1,6 +1,5 @@
 package com.synacy.leavemanagement.leave
 
-import com.synacy.leavemanagement.PageResponse
 import com.synacy.leavemanagement.employee.Employee
 import com.synacy.leavemanagement.enums.LeaveStatus
 import com.synacy.leavemanagement.enums.RoleType
@@ -34,7 +33,7 @@ class LeaveControllerSpec extends Specification {
         ])
 
         when:
-        PageResponse<LeaveWithManagerResponse> actualLeaves = leaveController.fetchAllLeaves(max, page)
+        leaveController.fetchAllLeaves(max, page)
 
         then:
         1 * leaveService.fetchLeaves(max, page) >> expectedLeaves
@@ -54,7 +53,7 @@ class LeaveControllerSpec extends Specification {
         ])
 
         when:
-        PageResponse<LeaveResponse> actualLeaves = leaveController.fetchEmployeeLeaves(max, page, employeeId)
+        leaveController.fetchEmployeeLeaves(max, page, employeeId)
 
         then:
         1 * leaveService.fetchLeavesByEmpId(max, page, employeeId) >> expectedLeaves
@@ -76,7 +75,7 @@ class LeaveControllerSpec extends Specification {
         ])
 
         when:
-        PageResponse<LeaveResponse> actualLeaves = leaveController.fetchLeavesUnderManager(max, page, managerId)
+        leaveController.fetchLeavesUnderManager(max, page, managerId)
 
         then:
         1 * leaveService.fetchLeavesUnderManager(max, page, managerId) >> expectedLeaves
