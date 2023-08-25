@@ -144,8 +144,6 @@ class LeaveServiceSpec extends Specification {
                 assert reason == leave.getReason()
                 assert LeaveStatus.PENDING == leave.getLeaveStatus()
         }
-
-
     }
 
     def "approveLeave should change leave status to approved given leave"() {
