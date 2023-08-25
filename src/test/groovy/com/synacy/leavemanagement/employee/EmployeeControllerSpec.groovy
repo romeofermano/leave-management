@@ -105,10 +105,5 @@ class EmployeeControllerSpec extends Specification {
         result.employeeStatus == EmployeeStatus.ACTIVE
     }
 
-    def "createMember should create member then return the corresponding EmployeeResponse"() {
 
-    }
-
-    def "terminateEmployee"() {
-    }
 }

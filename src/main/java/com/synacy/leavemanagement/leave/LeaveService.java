@@ -65,15 +65,13 @@ public class LeaveService {
         return leaveRepository.save(leave);
     }
 
-    Leave approveLeave(Long id) {
-        Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
+    Leave approveLeave(Leave leave) {
         leave.setLeaveStatus(LeaveStatus.APPROVED);
 
         return leaveRepository.save(leave);
     }
 
-    Leave rejectLeave(Long id) {
-        Leave leave = fetchLeaveId(id).orElseThrow(ResourceNotFoundException::new);
+    Leave rejectLeave(Leave leave) {
         leave.setLeaveStatus(LeaveStatus.REJECTED);
         Employee employee = employeeService.fetchEmployeeById(leave.getEmployee().getId());
         employee.addLeave(leave.getDays());
