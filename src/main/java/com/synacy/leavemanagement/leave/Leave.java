@@ -58,7 +58,6 @@ public class Leave {
     }
 
     private long daysDifference(LocalDate startDate, LocalDate endDate) {
-//        return ChronoUnit.DAYS.between(startDate, endDate);
         long days = 0;
         LocalDate currentDate = startDate;
 

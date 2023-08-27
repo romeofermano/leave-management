@@ -5,7 +5,6 @@ import com.synacy.leavemanagement.employee.EmployeeRepository;
 import com.synacy.leavemanagement.employee.EmployeeService;
 import com.synacy.leavemanagement.enums.LeaveStatus;
 import com.synacy.leavemanagement.enums.RoleType;
-import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

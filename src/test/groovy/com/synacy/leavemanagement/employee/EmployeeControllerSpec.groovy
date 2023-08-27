@@ -8,6 +8,7 @@ import com.synacy.leavemanagement.enums.RoleType
 import com.synacy.leavemanagement.web.exceptions.response.PageResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
+import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
 class EmployeeControllerSpec extends Specification {
@@ -105,10 +106,36 @@ class EmployeeControllerSpec extends Specification {
         result.employeeStatus == EmployeeStatus.ACTIVE
     }
 
+    def "createManager should return HttpStatus.CREATED"() {
+        given:
+        Long adminId = 1L
+        EmployeeManagerRequest managerRequest = new EmployeeManagerRequest(name: "Manager", roleType: RoleType.MANAGER,
+                totalLeaves: 10)
+        Employee createdManager = new Employee("Manager", RoleType.MANAGER, 10, Mock(Employee))
+
+        employeeService.createEmployeeManager(adminId, managerRequest) >> createdManager
+
+        when:
+        EmployeeResponse result = employeeController.createManager(adminId, managerRequest)
+
+        then:
+        HttpStatus status = result
+        status == HttpStatus.CREATED
+    }
+
     def "createMember should create member then return the corresponding EmployeeResponse"() {
 
     }
 
-    def "terminateEmployee"() {
+    def "terminateEmployee should call employeeService.terminateEmployee with the correct parameters"() {
+        given:
+        Long adminId = 1L
+        Long employeeId = 3L
+
+        when:
+        employeeController.terminateEmployee(adminId, employeeId)
+
+        then:
+        1 * employeeService.terminateEmployee(adminId, employeeId)
     }
 }
