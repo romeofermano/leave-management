@@ -27,14 +27,12 @@ class EmployeeServiceSpec extends Specification {
         given:
         int expectedCount = 5
 
-        and:
-        employeeRepository.countAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
-                [RoleType.MEMBER, RoleType.MANAGER]) >> expectedCount
-
         when:
         int result = employeeService.fetchTotalEmployee()
 
         then:
+        1 * employeeRepository.countAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
+                [RoleType.MEMBER, RoleType.MANAGER]) >> expectedCount
         expectedCount == result
     }
 
@@ -96,13 +94,11 @@ class EmployeeServiceSpec extends Specification {
         EmployeeManagerRequest employeeRequest = new EmployeeManagerRequest(name: "Robot", totalLeaves: 10,
                 roleType: RoleType.MANAGER)
 
-        and:
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
-
         when:
         employeeService.createEmployeeManager(adminId, employeeRequest)
 
         then:
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
         1 * employeeRepository.save(_) >> { Employee savedEmployee ->
             assert employeeRequest.getName() == savedEmployee.getName()
             assert employeeRequest.getTotalLeaves() == savedEmployee.getTotalLeaves()
@@ -135,14 +131,12 @@ class EmployeeServiceSpec extends Specification {
         EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
                 totalLeaves: 15, managerId: managerId)
 
-        and:
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
-
         when:
         employeeService.createEmployeeMember(adminId, memberRequest)
 
         then:
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.of(manager)
         1 * employeeRepository.save(_) >> { Employee savedMember ->
             memberRequest.getName() == savedMember.getName()
             memberRequest.getRoleType() == savedMember.getRoleType()
@@ -159,13 +153,11 @@ class EmployeeServiceSpec extends Specification {
         EmployeeMemberRequest memberRequest = Mock(EmployeeMemberRequest)
         Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15, Mock(Employee))
 
-        and:
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
-
         when:
         employeeService.createEmployeeMember(adminId, memberRequest)
 
         then:
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
         thrown(InvalidAdminException)
     }
 
@@ -178,14 +170,12 @@ class EmployeeServiceSpec extends Specification {
         EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
                 totalLeaves: 10, managerId: managerId)
 
-        and:
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.empty()
-
         when:
         employeeService.createEmployeeMember(adminId, memberRequest)
 
         then:
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(managerId, EmployeeStatus.ACTIVE, RoleType.MANAGER) >> Optional.empty()
         thrown(UserNotFoundException)
     }
 
@@ -221,13 +211,11 @@ class EmployeeServiceSpec extends Specification {
         Long employeeId = 2L
         Employee employee = new Employee("Manager", RoleType.MEMBER, 10, Mock(Employee))
 
-        and:
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
-
         when:
         employeeService.terminateEmployee(adminId, employeeId)
 
         then:
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
         thrown(InvalidAdminException)
     }
 
@@ -238,14 +226,12 @@ class EmployeeServiceSpec extends Specification {
         Employee admin = Mock(Employee)
         admin.getRoleType() >> RoleType.HR_ADMIN
 
-        and:
-        employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
-        employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(_ as Long, EmployeeStatus.ACTIVE, _ as Collection<RoleType>) >> Optional.empty()
-
         when:
         employeeService.terminateEmployee(adminId, employeeId)
 
         then:
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
+        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(_ as Long, EmployeeStatus.ACTIVE, _ as Collection<RoleType>) >> Optional.empty()
         thrown(UserNotFoundException)
     }
 }
