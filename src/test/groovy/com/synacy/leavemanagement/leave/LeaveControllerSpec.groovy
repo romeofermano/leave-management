@@ -33,7 +33,7 @@ class LeaveControllerSpec extends Specification {
         ])
 
         when:
-        PageResponse<LeaveWithManagerResponse> actualLeave = leaveController.fetchAllLeaves(max, page)
+        PageResponse<LeaveResponse> actualLeave = leaveController.fetchAllLeaves(max, page)
 
         then:
         1 * leaveService.fetchLeaves(max, page) >> expectedLeaves

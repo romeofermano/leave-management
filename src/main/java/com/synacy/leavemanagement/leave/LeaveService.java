@@ -49,7 +49,6 @@ public class LeaveService {
         return leaveRepository.findAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING, pageable);
     }
 
-//    TODO: Add exception for when leave isn't of status pending
     Optional<Leave> fetchPendingLeave(Long id){
         return Optional.ofNullable(leaveRepository.findByIdAndLeaveStatus(id, LeaveStatus.PENDING));
     }
