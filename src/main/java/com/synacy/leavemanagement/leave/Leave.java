@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -57,7 +58,18 @@ public class Leave {
     }
 
     private long daysDifference(LocalDate startDate, LocalDate endDate){
-        return ChronoUnit.DAYS.between(startDate, endDate);
+        long daysDifference = 0;
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            if ((currentDate.getDayOfWeek() != DayOfWeek.SATURDAY) && (currentDate.getDayOfWeek() != DayOfWeek.SUNDAY)) {
+                daysDifference++;
+            }
+
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return daysDifference;
     }
 
     void cancel(){

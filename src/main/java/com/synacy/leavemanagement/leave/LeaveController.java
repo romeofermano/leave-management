@@ -25,7 +25,7 @@ public class LeaveController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/v1/leave/hr")
     public PageResponse<LeaveResponse> fetchAllLeaves(
-            @RequestParam(value = "max", defaultValue = "5") int max,
+                    @RequestParam(value = "max", defaultValue = "5") int max,
             @RequestParam(value = "page", defaultValue = "1") int page
     ){
 
