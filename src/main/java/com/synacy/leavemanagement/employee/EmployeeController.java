@@ -24,7 +24,7 @@ public class EmployeeController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/api/v1/employees")
-    public PageResponse<EmployeeResponse> getEmployees(@RequestParam(value = "max", defaultValue = "5") int max,
+    public PageResponse<EmployeeResponse> getEmployees(@RequestParam(value = "max", defaultValue = "10") int max,
                                                        @RequestParam(value = "page", defaultValue = "1") int page) {
         Page<Employee> employees = employeeService.fetchEmployees(max, page);
         List<EmployeeResponse> employeeResponseList = employees.getContent().stream()
