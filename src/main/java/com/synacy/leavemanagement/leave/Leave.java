@@ -57,18 +57,20 @@ public class Leave {
 
     }
 
-    private long daysDifference(LocalDate startDate, LocalDate endDate) {
-        long days = 0;
+
+    private long daysDifference(LocalDate startDate, LocalDate endDate){
+        long daysDifference = 0;
         LocalDate currentDate = startDate;
 
-        while (currentDate.isBefore(endDate) || currentDate.isEqual(endDate)) {
-            if (currentDate.getDayOfWeek() != DayOfWeek.SATURDAY && currentDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
-                days++;
+        while (!currentDate.isAfter(endDate)) {
+            if ((currentDate.getDayOfWeek() != DayOfWeek.SATURDAY) && (currentDate.getDayOfWeek() != DayOfWeek.SUNDAY)) {
+                daysDifference++;
             }
+
             currentDate = currentDate.plusDays(1);
         }
 
-        return days;
+        return daysDifference;
     }
 
     void cancel() {
