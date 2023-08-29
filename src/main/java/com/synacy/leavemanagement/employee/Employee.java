@@ -1,4 +1,4 @@
-package com.synacy.leavemanagement.model;
+package com.synacy.leavemanagement.employee;
 
 import com.synacy.leavemanagement.enums.EmployeeStatus;
 import com.synacy.leavemanagement.enums.RoleType;
@@ -30,7 +30,7 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Employee.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
     private Employee manager;
 
@@ -43,22 +43,8 @@ public class Employee {
         this.roleType = roleType;
         this.totalLeaves = totalLeaves;
         this.currentLeaves = 0;
+        this.employeeStatus = EmployeeStatus.ACTIVE;
         this.manager = manager;
-        this.employeeStatus = EmployeeStatus.ACTIVE;
-    }
-
-    public Employee(String name, RoleType roleType, Integer totalLeaves) {
-        this.name = name;
-        this.roleType = roleType;
-        this.totalLeaves = totalLeaves;
-        this.currentLeaves = 0;
-        this.employeeStatus = EmployeeStatus.ACTIVE;
-    }
-
-    public Employee(String name) {
-        this.name = name;
-        this.roleType = RoleType.HR_ADMIN;
-        this.employeeStatus = EmployeeStatus.ACTIVE;
     }
 
     public void setId(Long id) {
@@ -87,5 +73,17 @@ public class Employee {
 
     public void setManager(Employee manager) {
         this.manager = manager;
+    }
+
+    public void terminate() {
+        this.employeeStatus = EmployeeStatus.TERMINATED;
+    }
+
+    public void deductLeave(Integer days){
+        this.setCurrentLeaves(this.getCurrentLeaves() - days);
+    }
+
+    public void addLeave(Integer days){
+        this.setCurrentLeaves(this.getCurrentLeaves() + days );
     }
 }

@@ -1,6 +1,6 @@
 package com.synacy.leavemanagement.web.exceptions;
 
-import com.synacy.leavemanagement.response.ApiErrorResponse;
+import com.synacy.leavemanagement.web.exceptions.response.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,6 +12,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidAdminException.class)
     public ApiErrorResponse handleInvalidAdminException(InvalidAdminException e) {
         return new ApiErrorResponse("INVALID_RIGHTS", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidPaginationException.class)
+    public ApiErrorResponse handleInvalidPaginationException(InvalidPaginationException e) {
+        return new ApiErrorResponse(e.getErrorCode(), e.getErrorMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
