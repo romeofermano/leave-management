@@ -11,21 +11,28 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class LeaveService {
+    private final List<Leave> leaveList;
     private final LeaveRepository leaveRepository;
     private final EmployeeService employeeService;
 
     private final EmployeeRepository employeeRepository;
 
-    public LeaveService(LeaveRepository leaveRepository, EmployeeService employeeService, EmployeeRepository employeeRepository) {
+    public LeaveService(List<Leave> leaveList, LeaveRepository leaveRepository, EmployeeService employeeService, EmployeeRepository employeeRepository) {
+        this.leaveList = leaveList;
         this.leaveRepository = leaveRepository;
         this.employeeService = employeeService;
         this.employeeRepository = employeeRepository;
+        createInitialLeaves();
     }
 
+    private void createInitialLeaves(){
+        leaveRepository.saveAll(this.leaveList);
+    }
     Optional<Leave> fetchLeaveId(Long id) {
         return leaveRepository.findById(id);
     }

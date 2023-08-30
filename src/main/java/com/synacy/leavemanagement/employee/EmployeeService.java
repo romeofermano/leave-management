@@ -18,11 +18,19 @@ import java.util.Optional;
 
 @Service
 public class EmployeeService {
+
+    private final List<Employee> employeeList;
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(List<Employee> employeeList, EmployeeRepository employeeRepository) {
+        this.employeeList = employeeList;
         this.employeeRepository = employeeRepository;
+        createInitialEmployees();
+    }
+
+    private void createInitialEmployees(){
+        employeeRepository.saveAll(this.employeeList);
     }
 
     private Optional<Employee> getEmployeeAdminById(Long id) {
