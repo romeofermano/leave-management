@@ -40,6 +40,13 @@ public class EmployeeController {
         return employees.stream().map(EmployeeListResponse::new).collect(Collectors.toList());
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/api/v1/employees/{id}")
+    public EmployeeResponse getEmployee(@PathVariable Long id){
+        Employee employee = this.employeeService.fetchEmployeeById(id);
+        return new EmployeeResponse(employee);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/employees")
     public EmployeeResponse createEmployee(@RequestParam(value = "adminId") Long adminId,
