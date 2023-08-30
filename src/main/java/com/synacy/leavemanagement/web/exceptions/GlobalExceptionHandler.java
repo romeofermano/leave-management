@@ -15,6 +15,12 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidManagerException.class)
+    public ApiErrorResponse handleInvalidManagerException(InvalidManagerException e) {
+        return new ApiErrorResponse("INVALID_MANAGER", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidPaginationException.class)
     public ApiErrorResponse handleInvalidPaginationException(InvalidPaginationException e) {
         return new ApiErrorResponse(e.getErrorCode(), e.getErrorMessage());
