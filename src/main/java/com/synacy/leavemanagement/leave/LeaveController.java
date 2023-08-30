@@ -72,6 +72,8 @@ public class LeaveController {
         return new PageResponse<>(totalCount, page, leaveResponsesList);
     }
 
+
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/v1/leave/manager")
     public PageResponse<LeaveResponse> fetchLeavesUnderManager(
@@ -93,7 +95,7 @@ public class LeaveController {
 
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("api/v1/leave")
+        @PostMapping("api/v1/leave")
     public LeaveResponse createLeave(
             @RequestBody LeaveRequest leaveRequest
     ) {

@@ -1,6 +1,7 @@
 package com.synacy.leavemanagement.employee
 
 import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest
+import com.synacy.leavemanagement.employee.request.EmployeeMemberRequest
 import com.synacy.leavemanagement.employee.response.EmployeeListResponse
 import com.synacy.leavemanagement.employee.response.EmployeeResponse
 import com.synacy.leavemanagement.enums.EmployeeStatus
@@ -105,5 +106,47 @@ class EmployeeControllerSpec extends Specification {
         result.employeeStatus == EmployeeStatus.ACTIVE
     }
 
+    def "createMember should be able to create member"(){
+        given:
+        long adminId = 1L
 
+        EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Ernest", roleType: RoleType.MEMBER, totalLeaves: 5, managerId: 2L)
+
+        Employee createdMember = new Employee("Ernest", RoleType.MEMBER, 5, Mock(Employee))
+
+
+        employeeService.createEmployeeMember(adminId, memberRequest) >> createdMember
+
+        when:
+        EmployeeResponse result = employeeController.createMember(adminId, memberRequest)
+
+        then:
+        result.getName() == createdMember.getName()
+        result.getRoleType() == createdMember.getRoleType()
+        result.getTotalLeaves() == createdMember.getTotalLeaves()
+        result.getManager() == createdMember.getManager().getName()
+        result.getEmployeeStatus() == EmployeeStatus.ACTIVE
+    }
+
+//    def "terminateEmployee should terminate employee"(){
+//        given:
+//        long adminId = 1L
+//        long employeeId = 5L
+//
+//        Employee terminatedEmployee = Mock(Employee)
+//        terminatedEmployee.getId() >> employeeId
+//        terminatedEmployee.getName() >> "Ernest"
+//        terminatedEmployee.getRoleType() >> RoleType.MEMBER
+//        terminatedEmployee.getManager() >> Mock(Employee)
+//
+//
+//        employeeService.terminateEmployee(adminId, employeeId) >> terminatedEmployee
+//
+//        when:
+//        def result = employeeController.terminateEmployee(adminId, employeeId)
+//
+//        then:
+//        terminatedEmployee.getEmployeeStatus() == EmployeeStatus.TERMINATED
+//
+//    }
 }

@@ -27,4 +27,6 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
     long countAllByEmployee_Id(Long id);
 
     long countAllByEmployeeManager_IdAndLeaveStatus(Long employee_id, LeaveStatus leaveStatus);
+
+
 }
