@@ -15,12 +15,15 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Page<Employee> findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus employeeStatus, Collection<RoleType> roleTypes,
                                                         Pageable pageable);
-
-    Optional<Employee> findByIdAndEmployeeStatusAndRoleType(Long id, EmployeeStatus employeeStatus, RoleType roleType);
-
     List<Employee> findAllByEmployeeStatus(EmployeeStatus employeeStatus);
+
+    List<Employee> findAllByEmployeeStatusAndRoleType(EmployeeStatus employeeStatus, RoleType roleType);
+
+    List<Employee> findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus employeeStatus, Collection<RoleType> roleType);
 
     Optional<Employee> findByIdAndEmployeeStatusAndRoleTypeIn(Long id, EmployeeStatus employeeStatus, Collection<RoleType> roleType);
 
     int countAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus employeeStatus, Collection<RoleType> roleType);
+
+    Optional<Employee> findByIdAndEmployeeStatusAndRoleType(Long id, EmployeeStatus employeeStatus, RoleType roleType);
 }

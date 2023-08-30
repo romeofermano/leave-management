@@ -9,6 +9,7 @@ import java.time.LocalDate;
 public class LeaveResponse {
     private final Long id;
     private final String employeeName;
+    private final String managerName;
     private final LocalDate startDate;
     private final LocalDate endDate;
     private final Integer days;
@@ -19,6 +20,7 @@ public class LeaveResponse {
     public LeaveResponse(Leave leave) {
         this.id = leave.getId();
         this.employeeName = leave.getEmployee().getName();
+        this.managerName = leave.getEmployee().getManager().getName();
         this.startDate = leave.getStartDate();
         this.endDate = leave.getEndDate();
         this.days = leave.getDays();
