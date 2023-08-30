@@ -16,7 +16,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Page<Employee> findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus employeeStatus, Collection<RoleType> roleTypes,
                                                         Pageable pageable);
 
-    List<Employee> findAllByEmployeeStatus(EmployeeStatus employeeStatus);
+    List<Employee> findAllByEmployeeStatusOrderById(EmployeeStatus employeeStatus);
 
     List<Employee> findAllByEmployeeStatusAndRoleType(EmployeeStatus employeeStatus, RoleType roleType);
 
