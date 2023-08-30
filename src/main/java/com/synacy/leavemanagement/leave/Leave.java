@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 @Getter
 @Entity
@@ -43,6 +42,7 @@ public class Leave {
 
     @Setter
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     LeaveStatus leaveStatus;
 
     public Leave(Employee employee, LocalDate startDate, LocalDate endDate, String reason) {
