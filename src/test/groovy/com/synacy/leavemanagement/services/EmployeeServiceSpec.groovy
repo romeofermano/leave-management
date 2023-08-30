@@ -4,7 +4,7 @@ import com.synacy.leavemanagement.employee.Employee
 import com.synacy.leavemanagement.employee.EmployeeRepository
 import com.synacy.leavemanagement.employee.EmployeeService
 import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest
-import com.synacy.leavemanagement.employee.request.EmployeeMemberRequest
+import com.synacy.leavemanagement.employee.request.EmployeeRequest
 import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
 import com.synacy.leavemanagement.web.exceptions.InvalidAdminException
@@ -128,11 +128,11 @@ class EmployeeServiceSpec extends Specification {
         Employee admin = Mock(Employee)
         admin.getRoleType() >> RoleType.HR_ADMIN
         Employee manager = new Employee("Manager", RoleType.MANAGER, 10, Mock(Employee))
-        EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
+        EmployeeRequest memberRequest = new EmployeeRequest(name: "Member 1", roleType: RoleType.MEMBER,
                 totalLeaves: 15, managerId: managerId)
 
         when:
-        employeeService.createEmployeeMember(adminId, memberRequest)
+        employeeService.createEmployee(adminId, memberRequest)
 
         then:
         1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
@@ -150,11 +150,11 @@ class EmployeeServiceSpec extends Specification {
     def "createEmployeeMember should throw InvalidAdminException when the creator is not HR Admin"() {
         given:
         Long adminId = 1L
-        EmployeeMemberRequest memberRequest = Mock(EmployeeMemberRequest)
+        EmployeeRequest memberRequest = Mock(EmployeeRequest)
         Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15, Mock(Employee))
 
         when:
-        employeeService.createEmployeeMember(adminId, memberRequest)
+        employeeService.createEmployee(adminId, memberRequest)
 
         then:
         1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
@@ -167,11 +167,11 @@ class EmployeeServiceSpec extends Specification {
         Long managerId = 3L
         Employee employeeAdmin = Mock(Employee)
         employeeAdmin.getRoleType() >> RoleType.HR_ADMIN
-        EmployeeMemberRequest memberRequest = new EmployeeMemberRequest(name: "Member 1", roleType: RoleType.MEMBER,
+        EmployeeRequest memberRequest = new EmployeeRequest(name: "Member 1", roleType: RoleType.MEMBER,
                 totalLeaves: 10, managerId: managerId)
 
         when:
-        employeeService.createEmployeeMember(adminId, memberRequest)
+        employeeService.createEmployee(adminId, memberRequest)
 
         then:
         1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
