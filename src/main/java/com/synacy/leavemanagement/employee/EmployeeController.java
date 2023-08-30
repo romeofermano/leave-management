@@ -5,9 +5,11 @@ import com.synacy.leavemanagement.employee.response.EmployeeListResponse;
 import com.synacy.leavemanagement.employee.response.EmployeeResponse;
 import com.synacy.leavemanagement.enums.RoleType;
 import com.synacy.leavemanagement.web.exceptions.response.PageResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +45,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/employees")
     public EmployeeResponse createEmployee(@RequestParam(value = "adminId") Long adminId,
-                                           @RequestBody EmployeeRequest employeeRequest) {
+                                           @Valid @RequestBody EmployeeRequest employeeRequest) {
         Employee employee = employeeService.createEmployee(adminId, employeeRequest);
         return new EmployeeResponse(employee);
     }
