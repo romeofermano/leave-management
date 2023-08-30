@@ -58,7 +58,7 @@ public class Leave {
     }
 
 
-    private long daysDifference(LocalDate startDate, LocalDate endDate){
+    private long daysDifference(LocalDate startDate, LocalDate endDate) {
         long daysDifference = 0;
         LocalDate currentDate = startDate;
 
