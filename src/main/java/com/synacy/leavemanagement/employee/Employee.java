@@ -42,7 +42,7 @@ public class Employee {
         this.name = name;
         this.roleType = roleType;
         this.totalLeaves = totalLeaves;
-        this.currentLeaves = 0;
+        this.currentLeaves = totalLeaves;
         this.employeeStatus = EmployeeStatus.ACTIVE;
         this.manager = manager;
     }
@@ -79,11 +79,11 @@ public class Employee {
         this.employeeStatus = EmployeeStatus.TERMINATED;
     }
 
-    public void deductLeave(Integer days){
+    public void deductLeave(Integer days) {
         this.setCurrentLeaves(this.getCurrentLeaves() - days);
     }
 
-    public void addLeave(Integer days){
-        this.setCurrentLeaves(this.getCurrentLeaves() + days );
+    public void addLeave(Integer days) {
+        this.setCurrentLeaves(this.getCurrentLeaves() + days);
     }
 }

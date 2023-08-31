@@ -89,14 +89,11 @@ class LeaveServiceSpec extends Specification {
                                                      new Leave(employee, LocalDate.of(2023, 8, 11), LocalDate.of(2023, 8, 14), "Vacation Leave 2"),
                                                      new Leave(employee, LocalDate.of(2023, 8, 20), LocalDate.of(2023, 8, 23), "Vacation Leave 3"),
         ])
-        List<Long> managerIds = expectedLeaves.getContent().stream().map {leave -> leave.getEmployee().getManager().getId()}.collect(Collectors.toList())
-
         when:
-        Page<Leave> actualLeave = leaveService.fetchLeavesByEmpId(2, 1, managerId)
+        Page<Leave> actualLeave = leaveService.fetchLeavesUnderManager(2, 1, managerId)
 
         then:
-        1 * leaveRepository.findAllByEmployee_Id(managerId, _) >> expectedLeaves
-//        [1L, 1L, 1L] == managerIds
+        1 * leaveRepository.findPendingLeavesByManagerIdExcludingManagerLeaves(_,_) >> expectedLeaves
         expectedLeaves == actualLeave
     }
 

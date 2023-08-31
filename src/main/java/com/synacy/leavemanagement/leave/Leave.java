@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 @Getter
 @Entity
@@ -42,6 +42,7 @@ public class Leave {
 
     @Setter
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     LeaveStatus leaveStatus;
 
     public Leave(Employee employee, LocalDate startDate, LocalDate endDate, String reason) {
@@ -52,15 +53,27 @@ public class Leave {
         this.reason = reason;
     }
 
-    public Leave(){
+    public Leave() {
 
     }
 
-    private long daysDifference(LocalDate startDate, LocalDate endDate){
-        return ChronoUnit.DAYS.between(startDate, endDate);
+
+    private long daysDifference(LocalDate startDate, LocalDate endDate) {
+        long daysDifference = 0;
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            if ((currentDate.getDayOfWeek() != DayOfWeek.SATURDAY) && (currentDate.getDayOfWeek() != DayOfWeek.SUNDAY)) {
+                daysDifference++;
+            }
+
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return daysDifference;
     }
 
-    void cancel(){
+    void cancel() {
         this.setLeaveStatus(LeaveStatus.CANCELLED);
     }
 }

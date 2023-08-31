@@ -2,6 +2,7 @@ package com.synacy.leavemanagement.leave;
 
 import com.synacy.leavemanagement.PageResponse;
 import com.synacy.leavemanagement.web.exceptions.InvalidPaginationException;
+import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 
 @RestController
 public class LeaveController {
@@ -26,10 +26,8 @@ public class LeaveController {
     @GetMapping("api/v1/leave/hr")
     public PageResponse<LeaveResponse> fetchAllLeaves(
             @RequestParam(value = "max", defaultValue = "5") int max,
-            @RequestParam(value = "page", defaultValue = "1") int page
-    ){
-
-        if(max < 1 || page < 1){
+            @RequestParam(value = "page", defaultValue = "1") int page) {
+        if (max < 1 || page < 1) {
             throw new InvalidPaginationException(
                     "INVALID_PAGINATION", "Invalid pagination parameters. Max or Page cannot be less than 1."
             );
@@ -42,16 +40,15 @@ public class LeaveController {
         return new PageResponse<>(totalCount, page, leaveResponsesList);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/v1/leave")
     public PageResponse<LeaveResponse> fetchEmployeeLeaves(
-            @RequestParam(value = "max", defaultValue = "5") int max,
+            @RequestParam(value = "max", defaultValue = "15") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "employeeId") Long employeeId
     ) {
         int totalCount;
         Page<Leave> leaves;
-        if(max < 1 || page < 1){
+        if (max < 1 || page < 1) {
             throw new InvalidPaginationException(
                     "INVALID_PAGINATION", "Invalid pagination parameters. Max or Page cannot be less than 1."
             );
@@ -63,14 +60,13 @@ public class LeaveController {
         return new PageResponse<>(totalCount, page, leaveResponsesList);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/v1/leave/manager")
     public PageResponse<LeaveResponse> fetchLeavesUnderManager(
-            @RequestParam(value = "max", defaultValue = "5") int max,
+            @RequestParam(value = "max", defaultValue = "3") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "managerId") Long managerId
-    ){
-        if(max < 1 || page < 1){
+    ) {
+        if (max < 1 || page < 1) {
             throw new InvalidPaginationException(
                     "INVALID_PAGINATION", "Invalid pagination parameters. Max or Page cannot be less than 1."
             );
@@ -117,7 +113,7 @@ public class LeaveController {
     @DeleteMapping("api/v1/leave/{id}")
     public void cancelLeave(
             @PathVariable Long id
-    ){
+    ) {
         Leave leave = leaveService.fetchPendingLeave(id).orElseThrow(ResourceNotFoundException::new);
         leaveService.cancelLeave(leave);
     }
