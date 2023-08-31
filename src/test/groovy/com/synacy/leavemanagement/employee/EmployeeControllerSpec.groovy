@@ -1,6 +1,6 @@
 package com.synacy.leavemanagement.employee
 
-import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest
+
 import com.synacy.leavemanagement.employee.request.EmployeeRequest
 import com.synacy.leavemanagement.employee.response.EmployeeListResponse
 import com.synacy.leavemanagement.employee.response.EmployeeResponse
