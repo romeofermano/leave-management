@@ -8,11 +8,11 @@ For the complete list of available URIs, the API Documentation for Employees and
 3. run the application
    
 ## Features
-User-friendly web interface for HR Admin, Managers, and Member.
-Role-based access control (HR Admin, Manager, and Member roles).
-Leave request submission and approval workflows.
-Employee creation.
-Leave balance tracking.
+- User-friendly web interface for HR Admin, Managers, and Member.
+- Role-based access control (HR Admin, Manager, and Member roles).
+- Leave request submission and approval workflows.
+- Employee creation.
+- Leave balance tracking.
 
 ### Technology Used
 Java 17.0.8-amzn,
