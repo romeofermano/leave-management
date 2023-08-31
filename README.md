@@ -15,9 +15,9 @@ Employee creation.
 Leave balance tracking.
 
 ### Technology Used
-Java 17.0.8-amzn
-SpringBoot
-Gradle
+Java 17.0.8-amzn,
+SpringBoot,
+Gradle,
 PostgresSQL
 
 
