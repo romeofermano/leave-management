@@ -1,6 +1,5 @@
 package com.synacy.leavemanagement.employee
 
-
 import com.synacy.leavemanagement.employee.request.EmployeeRequest
 import com.synacy.leavemanagement.employee.response.EmployeeListResponse
 import com.synacy.leavemanagement.employee.response.EmployeeResponse
@@ -61,7 +60,7 @@ class EmployeeControllerSpec extends Specification {
         employeeResponse2.employeeStatus == EmployeeStatus.ACTIVE
     }
 
-    def "getListEmployees should fetch a list of EmployeeListResponse"() {
+    def "getListEmployees should fetch all employee in list of EmployeeListResponse when role type is null"() {
         given:
         List<Employee> employeeList = [new Employee("Member 1", RoleType.MEMBER, 10, Mock(Employee)),
                                        new Employee("Manager 1", RoleType.MANAGER, 10, Mock(Employee))]
@@ -78,6 +77,47 @@ class EmployeeControllerSpec extends Specification {
         EmployeeListResponse employeeListResponse1 = result[0]
         employeeListResponse1.name == employeeList[0].name
         employeeListResponse1.roleType == employeeList[0].roleType
+
+        EmployeeListResponse employeeListResponse2 = result[1]
+        employeeListResponse2.name == employeeList[1].name
+        employeeListResponse2.roleType == employeeList[1].roleType
+    }
+
+    def "getListEmployees should fetch employees with the role type of HR_ADMIN when the query param value is MANAGER"() {
+        given:
+        List<Employee> employeeList = [new Employee("Employee 1", RoleType.HR_ADMIN, null, null)]
+        RoleType roleType = RoleType.MANAGER
+        int expectedCount = 1
+
+        employeeService.fetchListEmployee(roleType) >> employeeList
+
+        when:
+        List<EmployeeListResponse> result = employeeController.getListEmployees(roleType)
+
+        then:
+        result.size() == expectedCount
+        EmployeeListResponse employeeListResponse = result[0]
+        employeeListResponse.name == employeeList[0].name
+        employeeListResponse.roleType == employeeList[0].roleType
+    }
+
+    def "getListEmployees should fetch employees with the role type of HR_ADMIN, MANAGER when the query param value is MEMBER"() {
+        given:
+        List<Employee> employeeList = [new Employee("Employee 1", RoleType.HR_ADMIN, null, null),
+                                       new Employee("Employee 2", RoleType.MANAGER, 30, Mock(Employee))]
+        RoleType roleType = RoleType.MEMBER
+        int expectedCount = 2
+
+        employeeService.fetchListEmployee(roleType) >> employeeList
+
+        when:
+        List<EmployeeListResponse> result = employeeController.getListEmployees(roleType)
+
+        then:
+        result.size() == expectedCount
+        EmployeeListResponse employeeListResponse = result[0]
+        employeeListResponse.name == employeeList[0].name
+        employeeListResponse.roleType == employeeList[0].roleType
 
         EmployeeListResponse employeeListResponse2 = result[1]
         employeeListResponse2.name == employeeList[1].name
