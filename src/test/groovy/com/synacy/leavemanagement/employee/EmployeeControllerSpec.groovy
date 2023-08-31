@@ -1,6 +1,7 @@
 package com.synacy.leavemanagement.employee
 
 import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest
+import com.synacy.leavemanagement.employee.request.EmployeeRequest
 import com.synacy.leavemanagement.employee.response.EmployeeListResponse
 import com.synacy.leavemanagement.employee.response.EmployeeResponse
 import com.synacy.leavemanagement.enums.EmployeeStatus
@@ -47,7 +48,7 @@ class EmployeeControllerSpec extends Specification {
         employeeResponse1.roleType == employeeList[0].roleType
         employeeResponse1.totalLeaves == employeeList[0].totalLeaves
         employeeResponse1.manager == employeeList[0].manager.name
-        employeeResponse1.currentLeaves == 0
+        employeeResponse1.currentLeaves == employeeList[0].totalLeaves
         employeeResponse1.employeeStatus == EmployeeStatus.ACTIVE
 
         EmployeeResponse employeeResponse2 = result.content[1]
@@ -56,7 +57,7 @@ class EmployeeControllerSpec extends Specification {
         employeeResponse2.roleType == employeeList[1].roleType
         employeeResponse2.totalLeaves == employeeList[1].totalLeaves
         employeeResponse2.manager == employeeList[1].manager.name
-        employeeResponse2.currentLeaves == 0
+        employeeResponse2.currentLeaves == employeeList[1].totalLeaves
         employeeResponse2.employeeStatus == EmployeeStatus.ACTIVE
     }
 
@@ -66,10 +67,10 @@ class EmployeeControllerSpec extends Specification {
                                        new Employee("Manager 1", RoleType.MANAGER, 10, Mock(Employee))]
         int expectedTotalCount = 2
 
-        employeeService.fetchListEmployee() >> employeeList
+        employeeService.fetchListEmployee(null) >> employeeList
 
         when:
-        List<EmployeeListResponse> result = employeeController.getListEmployees()
+        List<EmployeeListResponse> result = employeeController.getListEmployees(null)
 
         then:
         result.size() == expectedTotalCount
@@ -86,14 +87,14 @@ class EmployeeControllerSpec extends Specification {
     def "createManager should create a manager then return the corresponding EmployeeResponse"() {
         given:
         Long adminId = 1L
-        EmployeeManagerRequest managerRequest = new EmployeeManagerRequest(name: "Manager", roleType: RoleType.MANAGER,
+        EmployeeRequest employeeRequest = new EmployeeRequest(name: "Manager", roleType: RoleType.MANAGER,
                 totalLeaves: 10)
         Employee createdManager = new Employee("Manager", RoleType.MANAGER, 10, Mock(Employee))
 
-        employeeService.createEmployeeManager(adminId, managerRequest) >> createdManager
+        employeeService.createEmployee(adminId, employeeRequest) >> createdManager
 
         when:
-        EmployeeResponse result = employeeController.createManager(adminId, managerRequest)
+        EmployeeResponse result = employeeController.createEmployee(adminId, employeeRequest)
 
         then:
         result.id == createdManager.id
@@ -101,7 +102,7 @@ class EmployeeControllerSpec extends Specification {
         result.roleType == createdManager.roleType
         result.manager == createdManager.manager.name
         result.totalLeaves == createdManager.totalLeaves
-        result.currentLeaves == 0
+        result.currentLeaves == createdManager.totalLeaves
         result.employeeStatus == EmployeeStatus.ACTIVE
     }
 

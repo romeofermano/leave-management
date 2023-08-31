@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public class EmployeeRequest {
+    @NotNull(message = "Employee name is required.")
     @NotBlank(message = "Employee name is required.")
     private String name;
 
