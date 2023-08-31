@@ -58,7 +58,7 @@ public class EmployeeService {
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
 
-        return employeeRepository.findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
+        return employeeRepository.findAllByEmployeeStatusAndRoleTypeInOrderByIdDesc(EmployeeStatus.ACTIVE,
                 Arrays.asList(RoleType.MANAGER, RoleType.MEMBER), pageable);
     }
 

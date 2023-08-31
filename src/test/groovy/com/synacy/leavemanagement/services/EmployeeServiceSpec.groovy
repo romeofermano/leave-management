@@ -16,10 +16,12 @@ class EmployeeServiceSpec extends Specification {
 
     EmployeeService employeeService
     EmployeeRepository employeeRepository
+    List<Employee> employeeList
 
     void setup() {
         employeeRepository = Mock(EmployeeRepository)
-        employeeService = new EmployeeService(employeeRepository)
+        employeeList = Mock(List<Employee>)
+        employeeService = new EmployeeService(employeeList, employeeRepository)
     }
 
     def "fetchTotalEmployee should count all employee that is currently active"() {
@@ -64,7 +66,7 @@ class EmployeeServiceSpec extends Specification {
         Page<Employee> result = employeeService.fetchEmployees(max, page)
 
         then:
-        1 * employeeRepository.findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
+        1 * employeeRepository.findAllByEmployeeStatusAndRoleTypeInOrderByIdDesc(EmployeeStatus.ACTIVE,
                 [RoleType.MANAGER, RoleType.MEMBER], _) >> employees
         employees == result
     }
