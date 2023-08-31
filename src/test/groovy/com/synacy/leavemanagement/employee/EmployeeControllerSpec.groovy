@@ -121,4 +121,21 @@ class EmployeeControllerSpec extends Specification {
         then:
         1 * employeeService.terminateEmployee(adminId, employeeId)
     }
+
+    def "getEmployee should fetch an employee by id"(){
+        given:
+        long employeeId = 5L
+        Employee employee = new Employee("Manager", RoleType.MANAGER, 10, Mock(Employee))
+
+        employeeService.fetchEmployeeById(employeeId) >> employee
+
+        when:
+        EmployeeResponse result = employeeController.getEmployee(employeeId)
+
+        then:
+        result.getName() == employee.getName()
+        result.getRoleType() == employee.getRoleType()
+        result.getTotalLeaves() == employee.getTotalLeaves()
+        result.getManager() == employee.getManager().getId()
+    }
 }
