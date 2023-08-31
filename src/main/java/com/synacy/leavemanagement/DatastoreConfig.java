@@ -24,14 +24,14 @@ public class DatastoreConfig {
     Employee member3;
 
     @Bean
-    public List<Employee> getEmployeeList(){
-         admin = new Employee("HR Admin", RoleType.HR_ADMIN, null, null);
-         manager1 = new Employee("Romeo Fermano", RoleType.MANAGER, 30, admin);
-         manager2 = new Employee("Clark Tabar", RoleType.MANAGER, 30, admin);
-         manager3 = new Employee("Carlina Amaba", RoleType.MANAGER, 30, admin);
-         member1 = new Employee("Ernest Dylan Gloria", RoleType.MEMBER, 30, manager1);
-         member2 = new Employee("Junsaku Yamada", RoleType.MEMBER, 30, manager2);
-         member3 = new Employee("Precious Mae Marson", RoleType.MEMBER, 30, manager3);
+    public List<Employee> getEmployeeList() {
+        admin = new Employee("HR Admin", RoleType.HR_ADMIN, null, null);
+        manager1 = new Employee("Romeo Fermano", RoleType.MANAGER, 30, admin);
+        manager2 = new Employee("Clark Tabar", RoleType.MANAGER, 30, admin);
+        manager3 = new Employee("Carlina Amaba", RoleType.MANAGER, 30, admin);
+        member1 = new Employee("Ernest Dylan Gloria", RoleType.MEMBER, 30, manager1);
+        member2 = new Employee("Junsaku Yamada", RoleType.MEMBER, 30, manager2);
+        member3 = new Employee("Precious Mae Marson", RoleType.MEMBER, 30, manager3);
 
         List<Employee> employeeList = new ArrayList<>();
         employeeList.add(admin);
@@ -46,7 +46,7 @@ public class DatastoreConfig {
     }
 
     @Bean
-    public List<Leave> getLeaveList(){
+    public List<Leave> getLeaveList() {
         Leave leave1 = new Leave(manager1, LocalDate.of(2022, Month.JANUARY, 24), LocalDate.of(2022, Month.JANUARY, 28), "Vacation Leave");
         Leave leave2 = new Leave(manager2, LocalDate.of(2022, Month.FEBRUARY, 17), LocalDate.of(2022, Month.FEBRUARY, 18), "Sick Leave");
         Leave leave3 = new Leave(manager3, LocalDate.of(2022, Month.MARCH, 28), LocalDate.of(2022, Month.MARCH, 31), "Vacation Leave");
