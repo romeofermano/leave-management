@@ -42,7 +42,7 @@ public class Employee {
         this.name = name;
         this.roleType = roleType;
         this.totalLeaves = totalLeaves;
-        this.currentLeaves = 0;
+        this.currentLeaves = totalLeaves;
         this.employeeStatus = EmployeeStatus.ACTIVE;
         this.manager = manager;
     }
