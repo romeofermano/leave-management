@@ -5,11 +5,13 @@ import com.synacy.leavemanagement.employee.EmployeeRepository;
 import com.synacy.leavemanagement.employee.EmployeeService;
 import com.synacy.leavemanagement.enums.LeaveStatus;
 import com.synacy.leavemanagement.enums.RoleType;
+import com.synacy.leavemanagement.web.exceptions.DateException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -46,7 +48,7 @@ public class LeaveService {
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
 
-        return leaveRepository.findAllByEmployeeManager_IdAndLeaveStatus(managerId, LeaveStatus.PENDING, pageable);
+        return leaveRepository.findLeavesByManagerIdExcludingManagerLeaves(managerId, pageable);
     }
 
     Optional<Leave> fetchPendingLeave(Long id) {
@@ -54,14 +56,29 @@ public class LeaveService {
     }
 
     Leave createLeave(LeaveRequest leaveRequest) {
-
         Optional<Employee> optionalEmployee = Optional.ofNullable(employeeService.fetchEmployeeById(leaveRequest.getEmployee_id()));
         Employee employee = optionalEmployee.get();
         Leave leave = new Leave(employee, leaveRequest.getStartDate(), leaveRequest.getEndDate(), leaveRequest.getReason());
         leave.setLeaveStatus(LeaveStatus.PENDING);
-        employee.deductLeave(leave.getDays());
-        employeeRepository.save(employee);
-        return leaveRepository.save(leave);
+
+        LocalDate today = LocalDate.now();
+        if(leave.getDays() > employee.getCurrentLeaves()){
+            throw new DateException(
+                    "Number of days filed in leave exceeds current leave credits"
+            );
+        } else if (leaveRequest.startDate.isBefore(today) || leaveRequest.endDate.isBefore(today)) {
+            throw new DateException(
+                    "Cannot file leave with dates before current date"
+            );
+        }else if (leaveRequest.endDate.isBefore(leaveRequest.startDate)) {
+            throw new DateException(
+                    "Cannot file leave with end date earlier than start date"
+            );
+        }else{
+            employee.deductLeave(leave.getDays());
+            employeeRepository.save(employee);
+            return leaveRepository.save(leave);
+        }
     }
 
     Leave approveLeave(Leave leave) {

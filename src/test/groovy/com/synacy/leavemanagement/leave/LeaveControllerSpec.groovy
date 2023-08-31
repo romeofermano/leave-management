@@ -102,15 +102,17 @@ class LeaveControllerSpec extends Specification {
         given:
         Long employeeId = 1L
         Employee employee = Mock(Employee)
+        Employee manager = Mock(Employee)
 
         LocalDate startDate = LocalDate.of(2023, 8, 10)
         LocalDate endDate = LocalDate.of(2023, 8, 12)
         String reason = "Vacation Leave"
+
         LeaveRequest leaveRequest = new LeaveRequest(employee_id: employeeId, startDate: startDate, endDate: endDate, reason: reason)
         Leave leave = new Leave(employee: employee, startDate: startDate, endDate: endDate, reason: reason, days: 2, leaveStatus: LeaveStatus.PENDING)
 
         leaveService.createLeave(leaveRequest) >> leave
-
+        employee.getManager() >> manager
         when:
         LeaveResponse actualLeave = leaveController.createLeave(leaveRequest)
 
@@ -126,12 +128,15 @@ class LeaveControllerSpec extends Specification {
         given:
         Long leaveId = 1L
         Employee employee = Mock(Employee)
+        Employee manager = Mock(Employee)
 
         LocalDate startDate = LocalDate.of(2023, 8, 10)
         LocalDate endDate = LocalDate.of(2023, 8, 12)
         String reason = "Vacation Leave"
+
         Leave leave = new Leave(employee: employee, startDate: startDate, endDate: endDate, reason: reason, days: 2, leaveStatus: LeaveStatus.PENDING)
 
+        employee.getManager() >> manager
         when:
         LeaveResponse actualLeave = leaveController.approveLeave(leaveId)
 
@@ -145,11 +150,14 @@ class LeaveControllerSpec extends Specification {
         given:
         Long leaveId = 1L
         Employee employee = Mock(Employee)
+        Employee manager = Mock(Employee)
 
         LocalDate startDate = LocalDate.of(2023, 8, 10)
         LocalDate endDate = LocalDate.of(2023, 8, 12)
         String reason = "Vacation Leave"
+
         Leave leave = new Leave(employee: employee, startDate: startDate, endDate: endDate, reason: reason, days: 2, leaveStatus: LeaveStatus.PENDING)
+        employee.getManager() >> manager
 
         when:
         LeaveResponse actualLeave = leaveController.rejectLeave(leaveId)
