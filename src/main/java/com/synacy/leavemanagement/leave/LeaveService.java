@@ -41,7 +41,7 @@ public class LeaveService {
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
 
-        return leaveRepository.findAllByEmployee_Id(employeeId, pageable);
+        return leaveRepository.findAllByEmployee_IdOrderByIdDesc(employeeId, pageable);
     }
 
     Page<Leave> fetchLeavesUnderManager(int max, int page, Long managerId) {

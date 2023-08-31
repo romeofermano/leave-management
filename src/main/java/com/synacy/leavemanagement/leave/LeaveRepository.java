@@ -14,14 +14,16 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
     Page<Leave> findAllByOrderById(Pageable pageable);
 
     @Query("SELECT l FROM Leave l WHERE l.employee IN" +
-            "(SELECT e FROM Employee e WHERE e.roleType <> :roleType)")
+            "(SELECT e FROM Employee e WHERE e.roleType <> :roleType)" +
+            "ORDER BY l.id DESC")
     Page<Leave> findAllExceptHRAdmin(RoleType roleType, Pageable pageable);
 
-    Page<Leave> findAllByEmployee_Id(Long id, Pageable pageable);
+    Page<Leave> findAllByEmployee_IdOrderByIdDesc(Long id, Pageable pageable);
 
     @Query("SELECT l FROM Leave l JOIN l.employee e " +
             "WHERE e.manager.id = :managerId " +
-            "AND e.id <> :managerId ")
+            "AND e.id <> :managerId " +
+            "ORDER BY l.id DESC")
     Page<Leave> findLeavesByManagerIdExcludingManagerLeaves(@Param("managerId") Long managerId, Pageable pageable);
 
     Page<Leave> findAllByEmployeeManager_IdAndLeaveStatus(Long id, LeaveStatus leaveStatus, Pageable pageable);
