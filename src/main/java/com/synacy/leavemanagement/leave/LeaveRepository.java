@@ -21,9 +21,8 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
     @Query("SELECT l FROM Leave l JOIN l.employee e " +
             "WHERE e.manager.id = :managerId " +
-            "AND e.id <> :managerId " +
-            "AND l.leaveStatus = 'PENDING'")
-    Page<Leave> findPendingLeavesByManagerIdExcludingManagerLeaves(@Param("managerId") Long managerId, Pageable pageable);
+            "AND e.id <> :managerId ")
+    Page<Leave> findLeavesByManagerIdExcludingManagerLeaves(@Param("managerId") Long managerId, Pageable pageable);
 
     Page<Leave> findAllByEmployeeManager_IdAndLeaveStatus(Long id, LeaveStatus leaveStatus, Pageable pageable);
 
