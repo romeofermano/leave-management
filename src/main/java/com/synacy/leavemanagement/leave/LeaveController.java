@@ -3,6 +3,7 @@ package com.synacy.leavemanagement.leave;
 import com.synacy.leavemanagement.PageResponse;
 import com.synacy.leavemanagement.web.exceptions.InvalidPaginationException;
 import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -81,9 +82,7 @@ public class LeaveController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("api/v1/leave")
-    public LeaveResponse createLeave(
-            @RequestBody LeaveRequest leaveRequest
-    ) {
+    public LeaveResponse createLeave(@Valid @RequestBody LeaveRequest leaveRequest) {
         Leave leave = leaveService.createLeave(leaveRequest);
         return new LeaveResponse(leave);
     }
