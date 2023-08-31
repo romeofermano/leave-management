@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Page<Employee> findAllByEmployeeStatusAndRoleTypeInOrderByIdDesc(EmployeeStatus employeeStatus, Collection<RoleType> roleTypes,
-                                                        Pageable pageable);
+                                                                     Pageable pageable);
 
     List<Employee> findAllByEmployeeStatusOrderById(EmployeeStatus employeeStatus);
 

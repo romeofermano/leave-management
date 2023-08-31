@@ -29,7 +29,7 @@ public class EmployeeService {
         createInitialEmployees();
     }
 
-    private void createInitialEmployees(){
+    private void createInitialEmployees() {
         employeeRepository.saveAll(this.employeeList);
     }
 
