@@ -13,7 +13,7 @@ import java.util.List;
 public class DatastoreConfig {
 
     @Bean
-    public List<Employee> getEmployeeList(){
+    public List<Employee> getEmployeeList() {
         Employee admin = new Employee("HR Admin", RoleType.HR_ADMIN, null, null);
         Employee manager = new Employee("Romeo", RoleType.MANAGER, 30, admin);
         Employee member = new Employee("Ernest", RoleType.MEMBER, 30, manager);

@@ -3,9 +3,11 @@
 ### Fetch All Leaves
 
 #### Request
+
 `GET` `/api/v1/leave/hr`
 
 ##### Request Body
+
 ###### No Request Body
 
 #### Response
@@ -23,12 +25,12 @@
 | reason         | String    | Reason for leave                     |
 | LeaveStatus    | String    | Status of the leave request          |
 
-
 Status Code: `200 OK`
 
 ##### Response Body
 
 Example:
+
 ```json
 {
   "totalCount": 3,
@@ -71,9 +73,11 @@ Example:
 ### Fetch Own Leaves
 
 #### Request
+
 `GET` `/api/v1/leave?employeeId={employeeId}`
 
 ##### Request Body
+
 ###### No Request Body
 
 #### Response
@@ -91,12 +95,12 @@ Example:
 | reason         | String    | Reason for leave                     |
 | LeaveStatus    | String    | Status of the leave request          |
 
-
 Status Code: `200 OK`
 
 ##### Response Body
 
 Example:
+
 ```json
 {
   "totalCount": 2,
@@ -129,9 +133,11 @@ Example:
 ### Fetch Leaves Under Manager
 
 #### Request
+
 `GET` `/api/v1/leave/manager?managerId={managerId}`
 
 ##### Request Body
+
 ###### No Request Body
 
 #### Response
@@ -149,12 +155,12 @@ Example:
 | reason         | String    | Reason for leave                     |
 | LeaveStatus    | String    | Status of the leave request          |
 
-
 Status Code: `200 OK`
 
 ##### Response Body
 
 Example:
+
 ```json
 {
   "totalCount": 2,
@@ -187,18 +193,20 @@ Example:
 ### Create Leave
 
 #### Request
+
 `POST` `/api/v1/leave`
 
 ##### Request Body
 
-| Request Field | Type      | Required  | Description                 |
-|---------------|-----------|-----------|-----------------------------|
-| employee_id   | Long      | true      | Employee ID                 |
-| startDate     | LocalDate | true      | Date which the leave starts |
-| endDate       | LocalDate | true      | Date which the leave end    |
-| reason        | String    | true      | Reason for leave            |
+| Request Field | Type      | Required | Description                 |
+|---------------|-----------|----------|-----------------------------|
+| employee_id   | Long      | true     | Employee ID                 |
+| startDate     | LocalDate | true     | Date which the leave starts |
+| endDate       | LocalDate | true     | Date which the leave end    |
+| reason        | String    | true     | Reason for leave            |
 
 Example:
+
 ```json
 {
   "employee_id": 1,
@@ -207,6 +215,7 @@ Example:
   "reason" : "Vacation Leave"
 }
 ```
+
 #### Response
 
 | Request Field | Type      | Description                          |
@@ -220,12 +229,12 @@ Example:
 | reason        | String    | Reason for leave                     |
 | LeaveStatus   | String    | Status of the leave request          |
 
-
 Status Code: `201 Created`
 
 ##### Response Body
 
 Example:
+
 ```json
 {
   "id": 1,
@@ -242,10 +251,13 @@ Example:
 ### Approve Leave
 
 #### Request
+
 `PUT` `/api/v1/leave/approve/{id}`
 
 ##### Request Body
+
 ###### No Request Body
+
 #### Response
 
 | Request Field | Type      | Description                          |
@@ -259,12 +271,12 @@ Example:
 | reason        | String    | Reason for leave                     |
 | LeaveStatus   | String    | Status of the leave request          |
 
-
 Status Code: `202 Accepted`
 
 ##### Response Body
 
 Example:
+
 ```json
 {
   "id": 1,
@@ -278,14 +290,16 @@ Example:
 }
 ```
 
-
 ### Reject Leave
 
 #### Request
+
 `PUT` `/api/v1/leave/reject/{id}`
 
 ##### Request Body
+
 ###### No Request Body
+
 #### Response
 
 | Request Field | Type      | Description                          |
@@ -299,12 +313,12 @@ Example:
 | reason        | String    | Reason for leave                     |
 | LeaveStatus   | String    | Status of the leave request          |
 
-
 Status Code: `202 Accepted`
 
 ##### Response Body
 
 Example:
+
 ```json
 {
   "id": 1,
@@ -318,18 +332,20 @@ Example:
 }
 ```
 
-
 ### Cancel Leave
 
 #### Request
+
 `DELETE` `/api/v1/leave/{id}`
 
 ##### Request Body
+
 ###### No Request Body
 
 Status Code: `204 No Content`
 
 #### Response
+
 ###### No Response Body
 
 

@@ -8,10 +8,10 @@ import com.synacy.leavemanagement.enums.RoleType
 import com.synacy.leavemanagement.web.exceptions.DateException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
-import java.util.stream.Collectors
 import spock.lang.Specification
 
 import java.time.LocalDate
+import java.util.stream.Collectors
 
 class LeaveServiceSpec extends Specification {
     LeaveService leaveService
@@ -47,9 +47,9 @@ class LeaveServiceSpec extends Specification {
     def "fetchLeaves should respond with all leaves"() {
         given:
         Page<Leave> expectedLeaves = new PageImpl<>([new Leave(Mock(Employee), LocalDate.of(2023, 8, 10), LocalDate.of(2023, 8, 10), "Vacation Leave"),
-                                                   new Leave(Mock(Employee), LocalDate.of(2023, 8, 11), LocalDate.of(2023, 8, 14), "Vacation Leave 2"),
-                                                   new Leave(Mock(Employee), LocalDate.of(2023, 8, 20), LocalDate.of(2023, 8, 23), "Vacation Leave 3"),
-                                                  ])
+                                                     new Leave(Mock(Employee), LocalDate.of(2023, 8, 11), LocalDate.of(2023, 8, 14), "Vacation Leave 2"),
+                                                     new Leave(Mock(Employee), LocalDate.of(2023, 8, 20), LocalDate.of(2023, 8, 23), "Vacation Leave 3"),
+        ])
 
         when:
         Page<Leave> actualLeaves = leaveService.fetchLeaves(3, 1)
@@ -68,7 +68,7 @@ class LeaveServiceSpec extends Specification {
                                                      new Leave(employee, LocalDate.of(2023, 8, 11), LocalDate.of(2023, 8, 14), "Vacation Leave 2"),
                                                      new Leave(employee, LocalDate.of(2023, 8, 20), LocalDate.of(2023, 8, 23), "Vacation Leave 3"),
         ])
-        List<Long> employeeIds = expectedLeaves.getContent().stream().map {leave -> leave.getEmployee().getId()}.collect(Collectors.toList())
+        List<Long> employeeIds = expectedLeaves.getContent().stream().map { leave -> leave.getEmployee().getId() }.collect(Collectors.toList())
 
         when:
         Page<Leave> actualLeave = leaveService.fetchLeavesByEmpId(2, 1, employeeId)
@@ -94,7 +94,7 @@ class LeaveServiceSpec extends Specification {
         Page<Leave> actualLeave = leaveService.fetchLeavesUnderManager(2, 1, managerId)
 
         then:
-        1 * leaveRepository.findLeavesByManagerIdExcludingManagerLeaves(_,_) >> expectedLeaves
+        1 * leaveRepository.findLeavesByManagerIdExcludingManagerLeaves(_, _) >> expectedLeaves
         expectedLeaves == actualLeave
     }
 
@@ -275,7 +275,7 @@ class LeaveServiceSpec extends Specification {
 
         then:
         count == result
-  }
+    }
 
     def "FetchTotalEmployeeLeaveUnderManagerCount should return count of leaves of employee with given manager if"() {
         given:
