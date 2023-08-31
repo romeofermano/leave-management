@@ -53,7 +53,7 @@ public class LeaveService {
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
 
-        return leaveRepository.findLeavesByManagerIdExcludingManagerLeaves(managerId, pageable);
+        return leaveRepository.findPendingLeavesByManagerIdExcludingManagerLeaves(managerId, pageable);
     }
 
     Optional<Leave> fetchPendingLeave(Long id) {
