@@ -3,7 +3,6 @@ package com.synacy.leavemanagement.services
 import com.synacy.leavemanagement.employee.Employee
 import com.synacy.leavemanagement.employee.EmployeeRepository
 import com.synacy.leavemanagement.employee.EmployeeService
-import com.synacy.leavemanagement.employee.request.EmployeeManagerRequest
 import com.synacy.leavemanagement.employee.request.EmployeeRequest
 import com.synacy.leavemanagement.enums.EmployeeStatus
 import com.synacy.leavemanagement.enums.RoleType
@@ -70,83 +69,44 @@ class EmployeeServiceSpec extends Specification {
         employees == result
     }
 
-    def "fetchListEmployee should fetch list of employee with the employee status is active"() {
+    def "fetchListEmployee should fetch list of employees with the employee status is active"() {
         given:
         List<Employee> employees = [new Employee("Member 1", RoleType.MEMBER, 10, Mock(Employee)),
                                     new Employee("Manager 1", RoleType.MANAGER, 10, Mock(Employee)),
                                     new Employee("Admin 1", RoleType.HR_ADMIN, 0, null)]
 
         when:
-        List<Employee> result = employeeService.fetchListEmployee()
+        List<Employee> result = employeeService.fetchListEmployee(null)
 
         then:
-        1 * employeeRepository.findAllByEmployeeStatus(EmployeeStatus.ACTIVE) >> employees
+        1 * employeeRepository.findAllByEmployeeStatusOrderById(EmployeeStatus.ACTIVE) >> employees
         result[0] == employees[0]
         result[1] == employees[1]
         result[2] == employees[2]
     }
 
-    def "createEmployeeManager should create new manager with the correct values when the creator is HR Admin"() {
+    def "createEmployee should create new employee with the correct values when the creator is HR Admin"() {
         given:
         Long adminId = 1L
-        Employee employeeAdmin = Mock(Employee)
-        employeeAdmin.getRoleType() >> RoleType.HR_ADMIN
-        Employee manager = new Employee("Manager", RoleType.MANAGER, 10, Mock(Employee))
-        EmployeeRequest employeeRequest = new EmployeeRequest(name: "Robot", totalLeaves: 10,
-                roleType: RoleType.MANAGER, managerId: 1L)
-
-        when:
-        employeeService.createEmployee(adminId, employeeRequest)
-
-        then:
-        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employeeAdmin)
-        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(adminId, EmployeeStatus.ACTIVE, [RoleType.HR_ADMIN, RoleType.MANAGER]) >> Optional.of(manager)
-        1 * employeeRepository.save(_) >> { Employee savedEmployee ->
-            assert employeeRequest.getName() == savedEmployee.getName()
-            assert employeeRequest.getTotalLeaves() == savedEmployee.getTotalLeaves()
-            assert employeeRequest.getRoleType() == savedEmployee.getRoleType()
-            assert EmployeeStatus.ACTIVE == savedEmployee.getEmployeeStatus()
-        }
-    }
-
-    def "createEmployeeManager should throw InvalidAdminException when creating a new member is not HR_ADMIN"() {
-        given:
-        Long id = 1L
-        Employee employee = new Employee("Employee 1", RoleType.MANAGER, 15, Mock(Employee))
-        EmployeeRequest managerRequest = Mock(EmployeeRequest)
-
-        when:
-        employeeService.createEmployee(id, managerRequest)
-
-        then:
-        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(id, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(employee)
-        thrown(InvalidAdminException)
-    }
-
-    def "createEmployeeMember should create new member with the correct values when the creator is HR Admin"() {
-        given:
-        Long adminId = 1L
-        Long managerId = 3L
         Employee admin = Mock(Employee)
         admin.getRoleType() >> RoleType.HR_ADMIN
-        Employee manager = new Employee("Manager", RoleType.MANAGER, 10, Mock(Employee))
-        manager.getId() >> managerId
+        Long managerId = 3L
+        Employee manager = new Employee("Member", RoleType.MANAGER, 10, Mock(Employee))
         EmployeeRequest employeeRequest = new EmployeeRequest(name: "Member 1", roleType: RoleType.MEMBER,
-                totalLeaves: 15, managerId: manager.id)
+                totalLeaves: 15, managerId: managerId)
 
         when:
         employeeService.createEmployee(adminId, employeeRequest)
 
         then:
         1 * employeeRepository.findByIdAndEmployeeStatusAndRoleType(adminId, EmployeeStatus.ACTIVE, RoleType.HR_ADMIN) >> Optional.of(admin)
-        1 * employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(managerId, EmployeeStatus.ACTIVE, [RoleType.MANAGER, RoleType.HR_ADMIN]) >> Optional.of(manager)
-        1 * employeeRepository.save(_) >> { Employee savedMember ->
-            assert employeeRequest.getName() == savedMember.getName()
-            assert employeeRequest.getRoleType() == savedMember.getRoleType()
-            assert employeeRequest.getTotalLeaves() == savedMember.getTotalLeaves()
-            assert employeeRequest.getManagerId() == savedMember.getManager().getId()
-            assert EmployeeStatus.ACTIVE == savedMember.getEmployeeStatus()
-            assert 0 == savedMember.getCurrentLeaves()
+        2 * employeeRepository.findByIdAndEmployeeStatusAndRoleTypeIn(managerId, EmployeeStatus.ACTIVE, [RoleType.MANAGER, RoleType.HR_ADMIN]) >> Optional.of(manager)
+        1 * employeeRepository.save(_) >> { Employee savedEmployee ->
+            assert employeeRequest.getName() == savedEmployee.getName()
+            assert employeeRequest.getRoleType() == savedEmployee.getRoleType()
+            assert employeeRequest.getTotalLeaves() == savedEmployee.getTotalLeaves()
+            assert EmployeeStatus.ACTIVE == savedEmployee.getEmployeeStatus()
+            assert 15 == savedEmployee.getCurrentLeaves()
         }
     }
 
