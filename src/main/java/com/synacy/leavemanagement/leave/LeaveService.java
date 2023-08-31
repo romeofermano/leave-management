@@ -26,7 +26,6 @@ public class LeaveService {
         this.leaveRepository = leaveRepository;
         this.employeeService = employeeService;
         this.employeeRepository = employeeRepository;
-        createInitialLeaves();
     }
 
     private void createInitialLeaves(){
@@ -53,7 +52,7 @@ public class LeaveService {
         int offset = page - 1;
         Pageable pageable = PageRequest.of(offset, max);
 
-        return leaveRepository.findPendingLeavesByManagerIdExcludingManagerLeaves(managerId, pageable);
+        return leaveRepository.findLeavesByManagerIdExcludingManagerLeaves(managerId, pageable);
     }
 
     Optional<Leave> fetchPendingLeave(Long id) {
