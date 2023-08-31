@@ -1,7 +1,6 @@
 package com.synacy.leavemanagement.leave;
 
 import com.synacy.leavemanagement.PageResponse;
-import com.synacy.leavemanagement.employee.Employee;
 import com.synacy.leavemanagement.web.exceptions.InvalidPaginationException;
 import com.synacy.leavemanagement.web.exceptions.ResourceNotFoundException;
 import jakarta.validation.Valid;

@@ -62,7 +62,7 @@ public class LeaveService {
         leave.setLeaveStatus(LeaveStatus.PENDING);
 
         LocalDate today = LocalDate.now();
-        if(leave.getDays() > employee.getCurrentLeaves()){
+        if (leave.getDays() > employee.getCurrentLeaves()) {
             throw new DateException(
                     "Number of days filed in leave exceeds current leave credits"
             );
@@ -70,11 +70,11 @@ public class LeaveService {
             throw new DateException(
                     "Cannot file leave with dates before current date"
             );
-        }else if (leaveRequest.endDate.isBefore(leaveRequest.startDate)) {
+        } else if (leaveRequest.endDate.isBefore(leaveRequest.startDate)) {
             throw new DateException(
                     "Cannot file leave with end date earlier than start date"
             );
-        }else{
+        } else {
             employee.deductLeave(leave.getDays());
             employeeRepository.save(employee);
             return leaveRepository.save(leave);
