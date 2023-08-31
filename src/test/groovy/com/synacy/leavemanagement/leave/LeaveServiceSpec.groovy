@@ -5,6 +5,7 @@ import com.synacy.leavemanagement.employee.EmployeeRepository
 import com.synacy.leavemanagement.employee.EmployeeService
 import com.synacy.leavemanagement.enums.LeaveStatus
 import com.synacy.leavemanagement.enums.RoleType
+import com.synacy.leavemanagement.web.exceptions.DateException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import java.util.stream.Collectors
@@ -93,7 +94,7 @@ class LeaveServiceSpec extends Specification {
         Page<Leave> actualLeave = leaveService.fetchLeavesUnderManager(2, 1, managerId)
 
         then:
-        1 * leaveRepository.findPendingLeavesByManagerIdExcludingManagerLeaves(_,_) >> expectedLeaves
+        1 * leaveRepository.findLeavesByManagerIdExcludingManagerLeaves(_,_) >> expectedLeaves
         expectedLeaves == actualLeave
     }
 
@@ -120,12 +121,13 @@ class LeaveServiceSpec extends Specification {
         Long employeeId = 1L
         Employee employee = Mock(Employee)
 
-        LocalDate startDate = LocalDate.of(2023, 8, 10)
-        LocalDate endDate = LocalDate.of(2023, 8, 12)
+        LocalDate startDate = LocalDate.of(2023, 9, 10)
+        LocalDate endDate = LocalDate.of(2023, 9, 12)
         String reason = "Vacation Leave"
         LeaveRequest leaveRequest = new LeaveRequest(employee_id: employeeId, startDate: startDate, endDate: endDate, reason: reason)
 
         employeeService.fetchEmployeeById(employeeId) >> employee
+        employee.getCurrentLeaves() >> 30
 
         when:
         leaveService.createLeave(leaveRequest)
@@ -140,6 +142,66 @@ class LeaveServiceSpec extends Specification {
                 assert reason == leave.getReason()
                 assert LeaveStatus.PENDING == leave.getLeaveStatus()
         }
+    }
+
+    def "createLeave should throw Date Exception when number of days filed in leave exceeds current leave credits"() {
+        given:
+        Long employeeId = 1L
+        Employee employee = Mock(Employee)
+
+        LocalDate startDate = LocalDate.of(2023, 9, 10)
+        LocalDate endDate = LocalDate.of(2023, 9, 22)
+        String reason = "Vacation Leave"
+        LeaveRequest leaveRequest = new LeaveRequest(employee_id: employeeId, startDate: startDate, endDate: endDate, reason: reason)
+
+        employeeService.fetchEmployeeById(employeeId) >> employee
+        employee.getCurrentLeaves() >> 2
+
+        when:
+        leaveService.createLeave(leaveRequest)
+
+        then:
+        thrown(DateException)
+    }
+
+    def "createLeave should throw Date Exception when filed leave has dates before current date"() {
+        given:
+        Long employeeId = 1L
+        Employee employee = Mock(Employee)
+
+        LocalDate startDate = LocalDate.of(2023, 8, 10)
+        LocalDate endDate = LocalDate.of(2023, 8, 12)
+        String reason = "Vacation Leave"
+        LeaveRequest leaveRequest = new LeaveRequest(employee_id: employeeId, startDate: startDate, endDate: endDate, reason: reason)
+
+        employeeService.fetchEmployeeById(employeeId) >> employee
+        employee.getCurrentLeaves() >> 10
+
+        when:
+        leaveService.createLeave(leaveRequest)
+
+        then:
+        thrown(DateException)
+    }
+
+    def "createLeave should throw Date Exception when filed leave has end date earlier than start date"() {
+        given:
+        Long employeeId = 1L
+        Employee employee = Mock(Employee)
+
+        LocalDate startDate = LocalDate.of(2023, 8, 22)
+        LocalDate endDate = LocalDate.of(2023, 8, 12)
+        String reason = "Vacation Leave"
+        LeaveRequest leaveRequest = new LeaveRequest(employee_id: employeeId, startDate: startDate, endDate: endDate, reason: reason)
+
+        employeeService.fetchEmployeeById(employeeId) >> employee
+        employee.getCurrentLeaves() >> 10
+
+        when:
+        leaveService.createLeave(leaveRequest)
+
+        then:
+        thrown(DateException)
     }
 
     def "approveLeave should change leave status to approved given leave"() {
