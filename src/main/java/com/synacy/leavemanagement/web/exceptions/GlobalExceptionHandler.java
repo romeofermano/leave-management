@@ -38,6 +38,12 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DateException.class)
+    public ApiErrorResponse handleDateException(DateException e) {
+        return new ApiErrorResponse("DATE_EXCEPTION", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiErrorResponse handleValidationException(MethodArgumentNotValidException e) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
