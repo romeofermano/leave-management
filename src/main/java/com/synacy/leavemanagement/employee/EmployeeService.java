@@ -69,7 +69,7 @@ public class EmployeeService {
             return employeeRepository.findAllByEmployeeStatusAndRoleTypeIn(EmployeeStatus.ACTIVE,
                     Arrays.asList(RoleType.HR_ADMIN, RoleType.MANAGER));
         } else {
-            return employeeRepository.findAllByEmployeeStatus(EmployeeStatus.ACTIVE);
+            return employeeRepository.findAllByEmployeeStatusOrderById(EmployeeStatus.ACTIVE);
         }
     }
 

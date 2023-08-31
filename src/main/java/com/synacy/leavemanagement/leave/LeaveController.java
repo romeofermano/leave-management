@@ -42,7 +42,7 @@ public class LeaveController {
 
     @GetMapping("api/v1/leave")
     public PageResponse<LeaveResponse> fetchEmployeeLeaves(
-            @RequestParam(value = "max", defaultValue = "3") int max,
+            @RequestParam(value = "max", defaultValue = "15") int max,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "employeeId") Long employeeId
     ) {
