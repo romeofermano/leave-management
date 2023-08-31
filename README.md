@@ -1,5 +1,3 @@
-# leave-management
-=======
 # Leave Management System
 This is the back-end of the Leave Management System, which is a web-based application made with Java SpringBoot that allows organizations to manage their employees' leaves efficiently. It provides a platform for employees to request leaves and for managers to approve or reject those requests. 
 For the complete list of available URIs, the API Documentation for Employees and Leave is provided.
