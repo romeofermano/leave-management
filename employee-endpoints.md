@@ -1,4 +1,4 @@
-## Leave Endpoints
+## Employee Endpoints
 
 ### Get All Employees
 
